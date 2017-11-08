@@ -1,7 +1,7 @@
 {
   "name": "generator-jhipster-spring-cloud-stream",
   "version": "0.0.0",
-  "description": "JHipster module, message broker support",
+  "description": "JHipster module for microservice messaging with Spring Cloud Stream",
   "keywords": [
     "yeoman-generator",
     "jhipster-module"

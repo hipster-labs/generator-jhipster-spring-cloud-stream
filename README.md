@@ -1,6 +1,6 @@
 # generator-jhipster-spring-cloud-stream
 [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
-> JHipster module, JHipster module, message broker support
+> JHipster module for microservice messaging with Spring Cloud Stream
 
 # Introduction
 
