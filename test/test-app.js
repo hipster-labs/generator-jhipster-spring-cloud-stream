@@ -22,10 +22,16 @@ describe('JHipster generator spring-cloud-stream', () => {
                 .on('end', done);
         });
 
-        it('generate dummy.txt file', () => {
+        it('generate docker-compose file', () => {
             assert.file([
-                'dummy-maven.txt',
-                'dummy-angular2.txt',
+                'src/main/docker/rabbitmq.yml'
+            ]);
+        });
+        it('generate Java classes', () => {
+            assert.file([
+                'src/main/java/com/mycompany/myapp/domain/JhiMessage.java',
+                'src/main/java/com/mycompany/myapp/service/stream/MessageSink.java',
+                'src/main/java/com/mycompany/myapp/web/rest/MessageRessource.java'
             ]);
         });
     });
@@ -46,10 +52,16 @@ describe('JHipster generator spring-cloud-stream', () => {
                 .on('end', done);
         });
 
-        it('generate dummy.txt file', () => {
+        it('generate docker-compose file', () => {
             assert.file([
-                'dummy-gradle.txt',
-                'dummy-angular1.txt',
+                'src/main/docker/rabbitmq.yml'
+            ]);
+        });
+        it('generate Java classes', () => {
+            assert.file([
+                'src/main/java/com/mycompany/myapp/domain/JhiMessage.java',
+                'src/main/java/com/mycompany/myapp/service/stream/MessageSink.java',
+                'src/main/java/com/mycompany/myapp/web/rest/MessageRessource.java'
             ]);
         });
     });

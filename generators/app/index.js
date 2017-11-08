@@ -99,18 +99,22 @@ module.exports = class extends BaseGenerator {
         this.log(`\nmessage=${this.message}`);
         this.log('------\n');
 
-        if (this.clientFramework === 'angular1') {
-            this.template('dummy.txt', 'dummy-angular1.txt');
-        }
-        if (this.clientFramework === 'angular2') {
-            this.template('dummy.txt', 'dummy-angular2.txt');
-        }
+        // add dependencies
         if (this.buildTool === 'maven') {
-            this.template('dummy.txt', 'dummy-maven.txt');
+            this.addMavenDependency('org.springframework.cloud', 'spring-cloud-starter-stream-rabbit');
+        } else if (this.buildTool === 'gradle') {
+            this.addGradleDependency('compile', 'org.springframework.cloud', 'spring-cloud-starter-stream-rabbit');
         }
-        if (this.buildTool === 'gradle') {
-            this.template('dummy.txt', 'dummy-gradle.txt');
-        }
+
+        // add docker-compose file
+        this.template('src/main/docker/_rabbitmq.yml', 'src/main/docker/rabbitmq.yml');
+
+        // add Java classes
+        this.template('src/main/java/package/domain/_JhiMessage.java', `${javaDir}domain/JhiMessage.java`);
+        this.template('src/main/java/package/service/stream/_MessageSink.java', `${javaDir}service/stream/MessageSink.java`);
+        this.template('src/main/java/package/web/rest/_MessageRessource.java', `${javaDir}web/rest/MessageRessource.java`);
+
+        // add Spring Boot configuration
     }
 
     install() {
