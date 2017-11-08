@@ -51,7 +51,7 @@ Apache-2.0 © [Pascal Grimaud](https://twitter.com/pascalgrimaud)
 
 [npm-image]: https://img.shields.io/npm/v/generator-jhipster-spring-cloud-stream.svg
 [npm-url]: https://npmjs.org/package/generator-jhipster-spring-cloud-stream
-[travis-image]: https://travis-ci.org/pascalgrimaud/generator-jhipster-spring-cloud-stream.svg?branch=master
-[travis-url]: https://travis-ci.org/pascalgrimaud/generator-jhipster-spring-cloud-stream
-[daviddm-image]: https://david-dm.org/pascalgrimaud/generator-jhipster-spring-cloud-stream.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org/pascalgrimaud/generator-jhipster-spring-cloud-stream
+[travis-image]: https://travis-ci.org/hipster-labs/generator-jhipster-spring-cloud-stream.svg?branch=master
+[travis-url]: https://travis-ci.org/hipster-labs/generator-jhipster-spring-cloud-stream
+[daviddm-image]: https://david-dm.org/hipster-labs/generator-jhipster-spring-cloud-stream.svg?theme=shields.io
+[daviddm-url]: https://david-dm.org/hipster-labs/generator-jhipster-spring-cloud-stream
