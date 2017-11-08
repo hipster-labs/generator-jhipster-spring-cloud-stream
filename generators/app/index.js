@@ -32,14 +32,23 @@ module.exports = class extends BaseGenerator {
     }
 
     prompting() {
-        const prompts = [
-            {
-                type: 'input',
-                name: 'message',
-                message: 'Please put something',
-                default: 'hello world!'
-            }
-        ];
+        const DEFAULT_BROKER_TYPE = 'RabbitMq';
+        const prompts = {
+            type: 'list',
+            name: 'messageBrokerType',
+            message: `Which ${chalk.yellow('*type*')} of message broker would you like to add?`,
+            choices: [
+                {
+                    value: DEFAULT_BROKER_TYPE,
+                    name: 'Rabbitmq message broker (recommended for simple projects)'
+                },
+                {
+                    value: 'kafka',
+                    name: 'Rabbitmq message broker (recommended for advanced projects) not implemented yet'
+                }
+            ],
+            default: DEFAULT_BROKER_TYPE
+        };
 
         const done = this.async();
         this.prompt(prompts).then((props) => {

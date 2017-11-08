@@ -1,2 +1,0 @@
-hello spring-cloud-stream!
-It's dummy.txt
