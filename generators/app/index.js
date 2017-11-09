@@ -3,6 +3,7 @@ const packagejs = require('../../package.json');
 const semver = require('semver');
 const BaseGenerator = require('generator-jhipster/generators/generator-base');
 const jhipsterConstants = require('generator-jhipster/generators/generator-constants');
+const utils = require ('./utils');
 
 module.exports = class extends BaseGenerator {
     get initializing() {
@@ -123,14 +124,19 @@ module.exports = class extends BaseGenerator {
         this.template('src/main/java/package/service/stream/_MessageSink.java', `${javaDir}service/stream/MessageSink.java`);
         this.template('src/main/java/package/web/rest/_MessageRessource.java', `${javaDir}web/rest/MessageRessource.java`);
 
-        const property_value=utils.findYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'jhipster.cache.ehcache.time-to-live-seconds');
+        const property_value=utils.getYamlProperty(`${resourceDir}config/application-dev.yml`, 'jhipster.cache.ehcache.time-to-live-seconds', this);
         this.log(`\nproperty value of jhipster.cache.ehcache.time-to-live-seconds : ${property_value}\n`);
-        utils.addYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'jhipster.cache.ehcache.time-to-live-seconds', 'toto');
+        utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'jhipster.cache.ehcache.time-to-live-seconds', 'toto');
+
+        utils.deleteYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'jhipster.cache.ehcache.time-to-live-seconds');
+        const property_delete=utils.getYamlProperty(`${resourceDir}config/application-dev.yml`, 'jhipster.cache.ehcache.time-to-live-seconds', this);
+        this.log(`\nproperty value of jhipster.cache.ehcache.time-to-live-seconds : ${property_delete}\n`);
 
         // add Spring Boot configuration
     }
 
     install() {
+        return;
         let logMsg =
             `To install your dependencies manually, run: ${chalk.yellow.bold(`${this.clientPackageManager} install`)}`;
 
