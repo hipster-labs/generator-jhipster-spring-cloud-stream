@@ -124,13 +124,22 @@ module.exports = class extends BaseGenerator {
         this.template('src/main/java/package/service/stream/_MessageSink.java', `${javaDir}service/stream/MessageSink.java`);
         this.template('src/main/java/package/web/rest/_MessageRessource.java', `${javaDir}web/rest/MessageRessource.java`);
 
-        const property_value=utils.getYamlProperty(`${resourceDir}config/application-dev.yml`, 'jhipster.cache.ehcache.time-to-live-seconds', this);
-        this.log(`\nproperty value of jhipster.cache.ehcache.time-to-live-seconds : ${property_value}\n`);
-        utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'jhipster.cache.ehcache.time-to-live-seconds', 'toto');
+        utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'spring.cloud.stream.default.contentType', 'application/json');
+        utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'spring.cloud.stream.bindings.input.destination', 'topic-jhipster');
+        utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'spring.cloud.stream.bindings.output.destination', 'topic-jhipster');
+        utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', 'headers.title');
 
-        utils.deleteYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'jhipster.cache.ehcache.time-to-live-seconds');
-        const property_delete=utils.getYamlProperty(`${resourceDir}config/application-dev.yml`, 'jhipster.cache.ehcache.time-to-live-seconds', this);
-        this.log(`\nproperty value of jhipster.cache.ehcache.time-to-live-seconds : ${property_delete}\n`);
+        utils.updateYamlProperty(`${resourceDir}config/application-prod.yml`, this, 'spring.cloud.stream.default.contentType', 'application/json');
+        utils.updateYamlProperty(`${resourceDir}config/application-prod.yml`, this, 'spring.cloud.stream.bindings.input.destination', 'topic-jhipster');
+        utils.updateYamlProperty(`${resourceDir}config/application-prod.yml`, this, 'spring.cloud.stream.bindings.output.destination', 'topic-jhipster');
+        utils.updateYamlProperty(`${resourceDir}config/application-prod.yml`, this, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', 'payload.title');
+        // const property_value=utils.getYamlProperty(`${resourceDir}config/application-dev.yml`, 'jhipster.cache.ehcache.time-to-live-seconds', this);
+        // this.log(`\nproperty value of jhipster.cache.ehcache.time-to-live-seconds : ${property_value}\n`);
+        // utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'jhipster.cache.ehcache.time-to-live-seconds', 'toto');
+        //
+        // utils.deleteYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'jhipster.cache.ehcache.time-to-live-seconds');
+        // const property_delete=utils.getYamlProperty(`${resourceDir}config/application-dev.yml`, 'jhipster.cache.ehcache.time-to-live-seconds', this);
+        // this.log(`\nproperty value of jhipster.cache.ehcache.time-to-live-seconds : ${property_delete}\n`);
 
         // add Spring Boot configuration
     }

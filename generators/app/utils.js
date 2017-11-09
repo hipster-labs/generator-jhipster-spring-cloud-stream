@@ -88,7 +88,7 @@ function deletePropertyInArray(array, name, generator) {
  */
 function getYamlProperty(file, name, generator) {
     try {
-        const treeData = jsyaml.load(generator.fs.read(`${file}`));
+        const treeData = jsyaml.safeLoad(generator.fs.read(`${file}`));
         return getPropertyInArray(treeData, name.toString().split("."), generator);
     } catch (e) {
         generator.log(e);
@@ -106,8 +106,9 @@ function getYamlProperty(file, name, generator) {
  */
 function updateYamlProperty(file, generator, name, value) {
     try {
-        const treeData = jsyaml.load(generator.fs.read(`${file}`));
+        const treeData = jsyaml.safeLoad(generator.fs.read(`${file}`));
         updatePropertyInArray(treeData, name, generator, value);
+        rewriteYamlFile(file,treeData,generator);
         //generator.log(treeData["jhipster"]);
     } catch (e) {
         generator.log(e);
@@ -126,9 +127,34 @@ function updateYamlProperty(file, generator, name, value) {
  */
 function deleteYamlProperty(file, generator, name) {
     try {
-        const treeData = jsyaml.load(generator.fs.read(`${file}`));
+        const treeData = jsyaml.safeLoad(generator.fs.read(`${file}`));
         deletePropertyInArray(treeData, name, generator);
+        rewriteYamlFile(file,treeData,generator);
         //generator.log(getPropertyInArray(treeData, name, generator));
+    } catch (e) {
+        generator.log(e);
+        generator.log(`${chalk.yellow('\nError ') + chalk.yellow('. Reference to ')}deleteYamlProperty(file: ${file}, generator:${generator}, name:${name}\n'`);
+        generator.debug('Error:', e);
+    }
+}
+
+
+
+/**
+ * Rewrite a yaml file.
+ * TODO move to main generator ?
+ *
+ * @param {string} file - yaml file to update
+ * @param {string} generator - The generator
+ * @param {string} name - property name to remove
+ */
+function rewriteYamlFile(file, data, generator) {
+    try {
+        const origData = jsyaml.safeLoad(generator.fs.read(`${file}`));
+        const dump = jsyaml.safeDump(data);
+        generator.fs.write(file, dump);
+
+
     } catch (e) {
         generator.log(e);
         generator.log(`${chalk.yellow('\nError ') + chalk.yellow('. Reference to ')}deleteYamlProperty(file: ${file}, generator:${generator}, name:${name}\n'`);
