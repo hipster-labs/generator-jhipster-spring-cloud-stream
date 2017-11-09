@@ -41,6 +41,7 @@ function getPropertyInArray(array, name, generator) {
         return _.get(array, name);
     } catch (e) {
         generator.log(e);
+        return undefined;
     }
 }
 
@@ -89,9 +90,10 @@ function deletePropertyInArray(array, name, generator) {
 function getYamlProperty(file, name, generator) {
     try {
         const treeData = jsyaml.safeLoad(generator.fs.read(`${file}`));
-        return getPropertyInArray(treeData, name.toString().split("."), generator);
+        return getPropertyInArray(treeData, name.toString().split('.'), generator);
     } catch (e) {
         generator.log(e);
+        return undefined;
     }
 }
 
@@ -108,8 +110,8 @@ function updateYamlProperty(file, generator, name, value) {
     try {
         const treeData = jsyaml.safeLoad(generator.fs.read(`${file}`));
         updatePropertyInArray(treeData, name, generator, value);
-        rewriteYamlFile(file,treeData,generator);
-        //generator.log(treeData["jhipster"]);
+        rewriteYamlFile(file, treeData, generator);
+        // generator.log(treeData["jhipster"]);
     } catch (e) {
         generator.log(e);
         generator.log(`${chalk.yellow('\nError ') + chalk.yellow('. Reference to ')}addYamlProperty(file: ${file}, generator:${generator}, name:${name}, value:${value}\n'`);
@@ -129,16 +131,14 @@ function deleteYamlProperty(file, generator, name) {
     try {
         const treeData = jsyaml.safeLoad(generator.fs.read(`${file}`));
         deletePropertyInArray(treeData, name, generator);
-        rewriteYamlFile(file,treeData,generator);
-        //generator.log(getPropertyInArray(treeData, name, generator));
+        rewriteYamlFile(file, treeData, generator);
+        // generator.log(getPropertyInArray(treeData, name, generator));
     } catch (e) {
         generator.log(e);
         generator.log(`${chalk.yellow('\nError ') + chalk.yellow('. Reference to ')}deleteYamlProperty(file: ${file}, generator:${generator}, name:${name}\n'`);
         generator.debug('Error:', e);
     }
 }
-
-
 
 /**
  * Rewrite a yaml file.
@@ -150,14 +150,12 @@ function deleteYamlProperty(file, generator, name) {
  */
 function rewriteYamlFile(file, data, generator) {
     try {
-        const origData = jsyaml.safeLoad(generator.fs.read(`${file}`));
+        // const origData = jsyaml.safeLoad(generator.fs.read(`${file}`));
         const dump = jsyaml.safeDump(data);
         generator.fs.write(file, dump);
-
-
     } catch (e) {
         generator.log(e);
-        generator.log(`${chalk.yellow('\nError ') + chalk.yellow('. Reference to ')}deleteYamlProperty(file: ${file}, generator:${generator}, name:${name}\n'`);
+        generator.log(`${chalk.yellow('\nError ') + chalk.yellow('. Reference to ')}deleteYamlProperty(file: ${file}, generator:${generator}, data:${data}\n'`);
         generator.debug('Error:', e);
     }
 }

@@ -3,7 +3,7 @@ const packagejs = require('../../package.json');
 const semver = require('semver');
 const BaseGenerator = require('generator-jhipster/generators/generator-base');
 const jhipsterConstants = require('generator-jhipster/generators/generator-constants');
-const utils = require ('./utils');
+const utils = require('./utils');
 
 module.exports = class extends BaseGenerator {
     get initializing() {
@@ -145,33 +145,32 @@ module.exports = class extends BaseGenerator {
     }
 
     install() {
-        return;
-        let logMsg =
-            `To install your dependencies manually, run: ${chalk.yellow.bold(`${this.clientPackageManager} install`)}`;
-
-        if (this.clientFramework === 'angular1') {
-            logMsg =
-                `To install your dependencies manually, run: ${chalk.yellow.bold(`${this.clientPackageManager} install & bower install`)}`;
-        }
-        const injectDependenciesAndConstants = (err) => {
-            if (err) {
-                this.warning('Install of dependencies failed!');
-                this.log(logMsg);
-            } else if (this.clientFramework === 'angular1') {
-                this.spawnCommand('gulp', ['install']);
-            }
-        };
-        const installConfig = {
-            bower: this.clientFramework === 'angular1',
-            npm: this.clientPackageManager !== 'yarn',
-            yarn: this.clientPackageManager === 'yarn',
-            callback: injectDependenciesAndConstants
-        };
-        if (this.options['skip-install']) {
-            this.log(logMsg);
-        } else {
-            this.installDependencies(installConfig);
-        }
+        // let logMsg =
+        //     `To install your dependencies manually, run: ${chalk.yellow.bold(`${this.clientPackageManager} install`)}`;
+        //
+        // if (this.clientFramework === 'angular1') {
+        //     logMsg =
+        //         `To install your dependencies manually, run: ${chalk.yellow.bold(`${this.clientPackageManager} install & bower install`)}`;
+        // }
+        // const injectDependenciesAndConstants = (err) => {
+        //     if (err) {
+        //         this.warning('Install of dependencies failed!');
+        //         this.log(logMsg);
+        //     } else if (this.clientFramework === 'angular1') {
+        //         this.spawnCommand('gulp', ['install']);
+        //     }
+        // };
+        // const installConfig = {
+        //     bower: this.clientFramework === 'angular1',
+        //     npm: this.clientPackageManager !== 'yarn',
+        //     yarn: this.clientPackageManager === 'yarn',
+        //     callback: injectDependenciesAndConstants
+        // };
+        // if (this.options['skip-install']) {
+        //     this.log(logMsg);
+        // } else {
+        //     this.installDependencies(installConfig);
+        // }
     }
 
     end() {
