@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @EnableBinding(Source.class)
-public class MessageRessource {
+public class MessageResource {
 
     private MessageChannel channel;
     private MessageSink messageSink;
