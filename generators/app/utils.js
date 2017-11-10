@@ -151,7 +151,9 @@ function deleteYamlProperty(file, generator, name) {
 function rewriteYamlFile(file, data, generator) {
     try {
         // const origData = jsyaml.safeLoad(generator.fs.read(`${file}`));
-        const dump = jsyaml.safeDump(data);
+        const dump = jsyaml.safeDump(data, {
+            'indent': 4
+        });
         generator.fs.write(file, dump);
     } catch (e) {
         generator.log(e);
