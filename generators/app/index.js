@@ -3,6 +3,7 @@ const packagejs = require('../../package.json');
 const semver = require('semver');
 const BaseGenerator = require('generator-jhipster/generators/generator-base');
 const jhipsterConstants = require('generator-jhipster/generators/generator-constants');
+const utils = require('./utils');
 
 module.exports = class extends BaseGenerator {
     get initializing() {
@@ -123,36 +124,53 @@ module.exports = class extends BaseGenerator {
         this.template('src/main/java/package/service/stream/_MessageSink.java', `${javaDir}service/stream/MessageSink.java`);
         this.template('src/main/java/package/web/rest/_MessageRessource.java', `${javaDir}web/rest/MessageRessource.java`);
 
+        utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'spring.cloud.stream.default.contentType', 'application/json');
+        utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'spring.cloud.stream.bindings.input.destination', 'topic-jhipster');
+        utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'spring.cloud.stream.bindings.output.destination', 'topic-jhipster');
+        utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', 'headers.title');
+
+        utils.updateYamlProperty(`${resourceDir}config/application-prod.yml`, this, 'spring.cloud.stream.default.contentType', 'application/json');
+        utils.updateYamlProperty(`${resourceDir}config/application-prod.yml`, this, 'spring.cloud.stream.bindings.input.destination', 'topic-jhipster');
+        utils.updateYamlProperty(`${resourceDir}config/application-prod.yml`, this, 'spring.cloud.stream.bindings.output.destination', 'topic-jhipster');
+        utils.updateYamlProperty(`${resourceDir}config/application-prod.yml`, this, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', 'payload.title');
+        // const property_value=utils.getYamlProperty(`${resourceDir}config/application-dev.yml`, 'jhipster.cache.ehcache.time-to-live-seconds', this);
+        // this.log(`\nproperty value of jhipster.cache.ehcache.time-to-live-seconds : ${property_value}\n`);
+        // utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'jhipster.cache.ehcache.time-to-live-seconds', 'toto');
+        //
+        // utils.deleteYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'jhipster.cache.ehcache.time-to-live-seconds');
+        // const property_delete=utils.getYamlProperty(`${resourceDir}config/application-dev.yml`, 'jhipster.cache.ehcache.time-to-live-seconds', this);
+        // this.log(`\nproperty value of jhipster.cache.ehcache.time-to-live-seconds : ${property_delete}\n`);
+
         // add Spring Boot configuration
     }
 
     install() {
-        let logMsg =
-            `To install your dependencies manually, run: ${chalk.yellow.bold(`${this.clientPackageManager} install`)}`;
-
-        if (this.clientFramework === 'angular1') {
-            logMsg =
-                `To install your dependencies manually, run: ${chalk.yellow.bold(`${this.clientPackageManager} install & bower install`)}`;
-        }
-        const injectDependenciesAndConstants = (err) => {
-            if (err) {
-                this.warning('Install of dependencies failed!');
-                this.log(logMsg);
-            } else if (this.clientFramework === 'angular1') {
-                this.spawnCommand('gulp', ['install']);
-            }
-        };
-        const installConfig = {
-            bower: this.clientFramework === 'angular1',
-            npm: this.clientPackageManager !== 'yarn',
-            yarn: this.clientPackageManager === 'yarn',
-            callback: injectDependenciesAndConstants
-        };
-        if (this.options['skip-install']) {
-            this.log(logMsg);
-        } else {
-            this.installDependencies(installConfig);
-        }
+        // let logMsg =
+        //     `To install your dependencies manually, run: ${chalk.yellow.bold(`${this.clientPackageManager} install`)}`;
+        //
+        // if (this.clientFramework === 'angular1') {
+        //     logMsg =
+        //         `To install your dependencies manually, run: ${chalk.yellow.bold(`${this.clientPackageManager} install & bower install`)}`;
+        // }
+        // const injectDependenciesAndConstants = (err) => {
+        //     if (err) {
+        //         this.warning('Install of dependencies failed!');
+        //         this.log(logMsg);
+        //     } else if (this.clientFramework === 'angular1') {
+        //         this.spawnCommand('gulp', ['install']);
+        //     }
+        // };
+        // const installConfig = {
+        //     bower: this.clientFramework === 'angular1',
+        //     npm: this.clientPackageManager !== 'yarn',
+        //     yarn: this.clientPackageManager === 'yarn',
+        //     callback: injectDependenciesAndConstants
+        // };
+        // if (this.options['skip-install']) {
+        //     this.log(logMsg);
+        // } else {
+        //     this.installDependencies(installConfig);
+        // }
     }
 
     end() {
