@@ -87,7 +87,7 @@ module.exports = class extends BaseGenerator {
         const webappDir = jhipsterConstants.CLIENT_MAIN_SRC_DIR;
 
         // variable from questions
-        this.message = this.props.message;
+        this.messageBrokerType = this.props.messageBrokerType;
 
         // show all variables
         this.log('\n--- some config read from config ---');
@@ -106,7 +106,7 @@ module.exports = class extends BaseGenerator {
         this.log(`webappDir=${webappDir}`);
 
         this.log('\n--- variables from questions ---');
-        this.log(`\nmessage=${this.message}`);
+        this.log(`\nmessage broker type = ${this.messageBrokerType}`);
         this.log('------\n');
 
         // add dependencies
@@ -124,15 +124,23 @@ module.exports = class extends BaseGenerator {
         this.template('src/main/java/package/service/stream/_MessageSink.java', `${javaDir}service/stream/MessageSink.java`);
         this.template('src/main/java/package/web/rest/_MessageRessource.java', `${javaDir}web/rest/MessageRessource.java`);
 
-        utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'spring.cloud.stream.default.contentType', 'application/json');
-        utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'spring.cloud.stream.bindings.input.destination', 'topic-jhipster');
-        utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'spring.cloud.stream.bindings.output.destination', 'topic-jhipster');
-        utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', 'headers.title');
+        // application-dev.yml
+        const yamlAppDevProperties = {};
+        utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.default.contentType', this, 'application/json');
+        utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.input.destination', this, 'topic-jhipster');
+        utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.output.destination', this, 'topic-jhipster');
+        utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', this, 'headers.title');
+        utils.updateYamlProperties(`${resourceDir}config/application-dev.yml`, yamlAppDevProperties, this);
+        // application-prod.yml
+        const yamlAppProdProperties = yamlAppDevProperties;
+        utils.updatePropertyInArray(yamlAppProdProperties, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', this, 'payload.title');
+        utils.updateYamlProperties(`${resourceDir}config/application-prod.yml`, yamlAppProdProperties, this);
+        // utils.addYamlPropertiesAfterAnotherProperty(`${resourceDir}config/application-dev.yml`, yamlAppDevProperties, this, 'liquibase');
+        // utils.addYamlPropertyAfterAnotherProperty(`${resourceDir}config/application-dev.yml`, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', 'headers.title',  this, 'liquibase');
 
-        utils.updateYamlProperty(`${resourceDir}config/application-prod.yml`, this, 'spring.cloud.stream.default.contentType', 'application/json');
-        utils.updateYamlProperty(`${resourceDir}config/application-prod.yml`, this, 'spring.cloud.stream.bindings.input.destination', 'topic-jhipster');
-        utils.updateYamlProperty(`${resourceDir}config/application-prod.yml`, this, 'spring.cloud.stream.bindings.output.destination', 'topic-jhipster');
-        utils.updateYamlProperty(`${resourceDir}config/application-prod.yml`, this, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', 'payload.title');
+        // const body = this.fs.read(`${resourceDir}config/application-dev.yml`);
+        // utils.getLastPropertyCommonHierarchy(body, 'toto.spring.profiles.cloud.stream.default.contentType', this,  true);
+        // utils.addYamlPropertiesBeforeAnotherProperty(`${resourceDir}config/application-dev.yml`, yamlAppDevProperties, this, 'application', true);
         // const property_value=utils.getYamlProperty(`${resourceDir}config/application-dev.yml`, 'jhipster.cache.ehcache.time-to-live-seconds', this);
         // this.log(`\nproperty value of jhipster.cache.ehcache.time-to-live-seconds : ${property_value}\n`);
         // utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'jhipster.cache.ehcache.time-to-live-seconds', 'toto');
