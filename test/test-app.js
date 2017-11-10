@@ -31,7 +31,7 @@ describe('JHipster generator spring-cloud-stream', () => {
             assert.file([
                 'src/main/java/com/mycompany/myapp/domain/JhiMessage.java',
                 'src/main/java/com/mycompany/myapp/service/stream/MessageSink.java',
-                'src/main/java/com/mycompany/myapp/web/rest/MessageRessource.java'
+                'src/main/java/com/mycompany/myapp/web/rest/MessageResource.java'
             ]);
         });
     });
@@ -61,7 +61,7 @@ describe('JHipster generator spring-cloud-stream', () => {
             assert.file([
                 'src/main/java/com/mycompany/myapp/domain/JhiMessage.java',
                 'src/main/java/com/mycompany/myapp/service/stream/MessageSink.java',
-                'src/main/java/com/mycompany/myapp/web/rest/MessageRessource.java'
+                'src/main/java/com/mycompany/myapp/web/rest/MessageResource.java'
             ]);
         });
     });

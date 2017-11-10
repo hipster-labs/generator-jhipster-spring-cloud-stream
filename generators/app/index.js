@@ -122,7 +122,7 @@ module.exports = class extends BaseGenerator {
         // add Java classes
         this.template('src/main/java/package/domain/_JhiMessage.java', `${javaDir}domain/JhiMessage.java`);
         this.template('src/main/java/package/service/stream/_MessageSink.java', `${javaDir}service/stream/MessageSink.java`);
-        this.template('src/main/java/package/web/rest/_MessageRessource.java', `${javaDir}web/rest/MessageRessource.java`);
+        this.template('src/main/java/package/web/rest/_MessageResource.java', `${javaDir}web/rest/MessageResource.java`);
 
         utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'spring.cloud.stream.default.contentType', 'application/json');
         utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'spring.cloud.stream.bindings.input.destination', 'topic-jhipster');
