@@ -33,7 +33,7 @@ module.exports = class extends BaseGenerator {
     }
 
     prompting() {
-        const DEFAULT_BROKER_TYPE = 'RabbitMq';
+        const DEFAULT_BROKER_TYPE = 'RabbitMQ';
         const prompts = {
             type: 'list',
             name: 'messageBrokerType',
@@ -41,11 +41,11 @@ module.exports = class extends BaseGenerator {
             choices: [
                 {
                     value: DEFAULT_BROKER_TYPE,
-                    name: 'Rabbitmq message broker (recommended for simple projects)'
+                    name: 'RabbitMQ message broker (recommended for simple projects)'
                 },
                 {
                     value: 'kafka',
-                    name: 'Rabbitmq message broker (recommended for advanced projects) not implemented yet'
+                    name: 'Kafka message broker (recommended for advanced projects) not implemented yet'
                 }
             ],
             default: DEFAULT_BROKER_TYPE
