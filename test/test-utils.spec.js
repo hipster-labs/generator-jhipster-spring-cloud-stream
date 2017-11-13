@@ -1,7 +1,6 @@
 /* global describe, beforeEach, it */
 
 const utils = require('../generators/app/utils');
-// const fse = require('fs-extra');
 const fse = require('fs');
 const chai = require('chai');
 // Load dirty chai first to hook plugin extensions

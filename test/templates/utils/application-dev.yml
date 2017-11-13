@@ -51,6 +51,20 @@ spring:
         cache-seconds: 1
     thymeleaf:
         cache: false
+    cloud:
+        stream:
+            default:
+                contentType: application/json
+            bindings:
+                input:
+                    destination: topic-jhipster
+                output:
+                    destination: topic-jhipster
+                rabbit:
+                    bindings:
+                        output:
+                            producer:
+                                routingKeyExpression: headers.title
     
 liquibase:
     contexts: dev
