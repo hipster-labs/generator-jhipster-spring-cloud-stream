@@ -11,7 +11,7 @@ const istanbul = require('gulp-istanbul');
 const nsp = require('gulp-nsp');
 const plumber = require('gulp-plumber');
 
-gulp.task('eslint', () => gulp.src(['gulpfile.js', 'generators/app/index.js', 'test/*.js'])
+gulp.task('eslint', () => gulp.src(['gulpfile.js', 'generators/app/*.js', 'test/*.js'])
     // .pipe(plumber({errorHandler: handleErrors}))
     .pipe(eslint())
     .pipe(eslint.format())
