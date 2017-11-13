@@ -123,25 +123,10 @@ describe('JHipster generator spring-cloud-stream', () => {
     });
     describe('Test yaml property', () => {
         describe('Get YAML property', () => {
-          // beforeEach((done) => {
-          //     helpers
-          //         .run(path.join(__dirname, '../generators/app'))
-          //         .inTmpDir((dir) => {
-          //             fse.copySync(path.join(__dirname, '../test/templates/utils'), dir);
-          //         })
-          //         .withOptions({
-          //             testmode: true
-          //         })
-          //         .withPrompts({
-          //             message: 'simple message to say hello'
-          //         })
-          //         .on('end', done);
-          // });
             it('get property that doesnt exist', () => {
               let file= path.join(__dirname, '../test/templates/utils/application-dev.yml');
-  //            const filepath = path.resolve(__dirname, '../test/templates/utils/application-dev.yml');
-                  const result = utils.getYamlProperty(file, 'toto', BaseGenerator);
-                    expect(result).to.be.undefined();
+              const result = utils.getYamlProperty(file, 'toto', BaseGenerator);
+              expect(result).to.be.undefined();
             });
         });
     });
