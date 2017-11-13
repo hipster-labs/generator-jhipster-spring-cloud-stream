@@ -124,9 +124,7 @@ function diffArray(arr1, arr2, generator) {
     try {
         let strResult;
         let result = [];
-        let reduc = _.reduce(arr1, function (result, value, key) {
-            return _.isEqual(value, arr2[key]) ? result : result.concat(key);
-        }, []);
+        let reduc = _.reduce(arr1, (result, value, key) => (_.isEqual(value, arr2[key]) ? result : result.concat(key)), []);
 
         while (reduc && reduc.length > 0) {
             result = result.concat(reduc);
@@ -135,12 +133,13 @@ function diffArray(arr1, arr2, generator) {
             if (arr1 === undefined || arr2 === undefined) {
                 return undefined;
             }
-            reduc = _.reduce(arr1, function (result, value, key) {
-                if (arr2[key]) {
-                    return _.isEqual(value, arr2[key]) ? result : result.concat(key);
-                }
-                return false;
-            }, []);
+            // reduc = _.reduce(arr1, (result, value, key) => {
+            //     if (arr2[key]) {
+            //         return _.isEqual(value, arr2[key]) ? result : result.concat(key);
+            //     }
+            //     return false;
+            // }, []);
+            reduc = reduceYaml(arr1, arr2, result);
         }
 
         if (result !== undefined) {
@@ -153,6 +152,23 @@ function diffArray(arr1, arr2, generator) {
     }
 }
 
+/**
+ * use by diffArray
+ * TODO To redo / optimized
+ *
+ * @param {string} arr1 - array to search
+ * @param {string} arr2 -  array to search
+ * @param {string} result -
+ * @return {string} String path property
+ */
+function reduceYaml(arr1, arr2, result) {
+    return _.reduce(arr1, (result, value, key) => {
+        if (arr2[key]) {
+            return _.isEqual(value, arr2[key]) ? result : result.concat(key);
+        }
+        return false;
+    }, []);
+}
 /*
 ██    ██  █████  ███    ███ ██          ███████ ██ ██      ███████     ██████  ███████  █████  ██████
  ██  ██  ██   ██ ████  ████ ██          ██      ██ ██      ██          ██   ██ ██      ██   ██ ██   ██
@@ -173,7 +189,7 @@ function diffArray(arr1, arr2, generator) {
  */
 function getYamlProperty(file, name, generator) {
     try {
-        const treeData = jsyaml.safeLoad(generator.fs.read(`${file}`));
+        const treeData = jsyaml.safeLoad(generator.fs.readFileSync(`${file}`, 'utf8'));
         return getPropertyInArray(treeData, name.toString().split('.'), generator);
     } catch (e) {
         generator.log(e);
@@ -474,7 +490,18 @@ function getIndexBeforeLineOfProperty(body, property, generator, addBeforeCommen
         return -1;
     }
 }
-
+function hasProperty(array, property) {
+    let returnIndex;
+    array.some((line, i) => {
+        // generator.log(line);
+        if ((line.indexOf('#') === -1) && (line.indexOf(`${property}:`) !== -1)) {
+            returnIndex = i;
+            return true;
+        }
+        return false;
+    });
+    return returnIndex;
+}
 /**
  * get index of line of property
  *
@@ -491,16 +518,12 @@ function getIndexAfterLineOfProperty(body, property, generator, addBeforeComment
         const namePath = property.split('.');
         // generator.log('namePath : ' + namePath);
 
-        while ((curr = namePath.splice(0, 1)[0]) !== undefined) {
+        curr = namePath.splice(0, 1)[0];
+
+        while (curr !== undefined) {
+            otherwiseLineIndex = hasProperty(lines, curr);
             // generator.log('cur props : ' + curr);
-            lines.some((line, i) => {
-                // generator.log(line);
-                if ((line.indexOf('#') === -1) && (line.indexOf(`${curr}:`) !== -1)) {
-                    otherwiseLineIndex = i;
-                    return true;
-                }
-                return false;
-            });
+            curr = namePath.splice(0, 1)[0];
         }
         // generator.log('indexe line : ' + otherwiseLineIndex);
         if (otherwiseLineIndex === -1) {
