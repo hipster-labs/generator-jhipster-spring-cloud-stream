@@ -6,12 +6,12 @@ const fse = require('fs');
 const chai = require('chai');
 // Load dirty chai first to hook plugin extensions
 const dirtyChai = require('dirty-chai');
-const helpers = require('yeoman-test');
 const path = require('path');
+
 chai.use(dirtyChai);
 const expect = chai.expect;
 const BaseGenerator = require('generator-jhipster/generators/generator-base');
-//const BaseGenerator = this;
+// const BaseGenerator = this;
 BaseGenerator.log = (msg) => { console.log(msg); }; // eslint-disable-line no-console
 BaseGenerator.fs = fse;
 
@@ -124,9 +124,9 @@ describe('JHipster generator spring-cloud-stream', () => {
     describe('Test yaml property', () => {
         describe('Get YAML property', () => {
             it('get property that doesnt exist', () => {
-              let file= path.join(__dirname, '../test/templates/utils/application-dev.yml');
-              const result = utils.getYamlProperty(file, 'toto', BaseGenerator);
-              expect(result).to.be.undefined();
+                const file = path.join(__dirname, '../test/templates/utils/application-dev.yml');
+                const result = utils.getYamlProperty(file, 'toto', BaseGenerator);
+                expect(result).to.be.undefined();
             });
         });
     });
