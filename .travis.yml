@@ -3,9 +3,15 @@ os:
 language: node_js
 node_js:
     - "8.9.1"
+cache:
+    directories:
+        - $HOME/.m2
+        - $HOME/.gradle
 before_install:
     - npm install -g npm
-    - npm install -g yarn
+    # Repo for Yarn
+    - curl -o- -L https://yarnpkg.com/install.sh | bash
+    - export PATH=$HOME/.yarn/bin:$PATH
     - yarn global add yo
 install:
     - yarn install
@@ -14,7 +20,6 @@ script:
     - gulp eslint
     - gulp test
     - cd $HOME
-    - mkdir 
     - git clone https://github.com/jhipster/jhipster-sample-app-ng2
     - cd jhipster-sample-app-ng2
     - yarn link generator-jhipster-spring-cloud-stream
