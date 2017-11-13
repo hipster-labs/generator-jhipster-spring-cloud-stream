@@ -133,12 +133,13 @@ function diffArray(arr1, arr2, generator) {
             if (arr1 === undefined || arr2 === undefined) {
                 return undefined;
             }
-            reduc = _.reduce(arr1, (result, value, key) => {
-                if (arr2[key]) {
-                    return _.isEqual(value, arr2[key]) ? result : result.concat(key);
-                }
-                return false;
-            }, []);
+            // reduc = _.reduce(arr1, (result, value, key) => {
+            //     if (arr2[key]) {
+            //         return _.isEqual(value, arr2[key]) ? result : result.concat(key);
+            //     }
+            //     return false;
+            // }, []);
+            reduc = reduceYaml(arr1, arr2, result);
         }
 
         if (result !== undefined) {
@@ -151,6 +152,23 @@ function diffArray(arr1, arr2, generator) {
     }
 }
 
+/**
+ * use by diffArray
+ * TODO To redo / optimized
+ *
+ * @param {string} arr1 - array to search
+ * @param {string} arr2 -  array to search
+ * @param {string} result - 
+ * @return {string} String path property
+ */
+function reduceYaml(arr1, arr2, result) {
+    return _.reduce(arr1, (result, value, key) => {
+        if (arr2[key]) {
+            return _.isEqual(value, arr2[key]) ? result : result.concat(key);
+        }
+        return false;
+    }, []);
+}
 /*
 ██    ██  █████  ███    ███ ██          ███████ ██ ██      ███████     ██████  ███████  █████  ██████
  ██  ██  ██   ██ ████  ████ ██          ██      ██ ██      ██          ██   ██ ██      ██   ██ ██   ██
