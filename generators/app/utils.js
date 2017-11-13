@@ -158,7 +158,7 @@ function diffArray(arr1, arr2, generator) {
  *
  * @param {string} arr1 - array to search
  * @param {string} arr2 -  array to search
- * @param {string} result - 
+ * @param {string} result -
  * @return {string} String path property
  */
 function reduceYaml(arr1, arr2, result) {
