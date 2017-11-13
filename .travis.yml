@@ -24,4 +24,4 @@ script:
     - cd jhipster-sample-app-ng2
     - yarn link generator-jhipster-spring-cloud-stream
     - yo jhipster-spring-cloud-stream default --force
-    - ./mvnw clean package -Pprod
+    - ./mvnw clean test
