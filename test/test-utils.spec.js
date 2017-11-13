@@ -1,17 +1,19 @@
 /* global describe, beforeEach, it */
 
 const utils = require('../generators/app/utils');
-
+// const fse = require('fs-extra');
+const fse = require('fs');
 const chai = require('chai');
 // Load dirty chai first to hook plugin extensions
 const dirtyChai = require('dirty-chai');
-
+const helpers = require('yeoman-test');
+const path = require('path');
 chai.use(dirtyChai);
 const expect = chai.expect;
-
-const BaseGenerator = this;
+const BaseGenerator = require('generator-jhipster/generators/generator-base');
+//const BaseGenerator = this;
 BaseGenerator.log = (msg) => { console.log(msg); }; // eslint-disable-line no-console
-
+BaseGenerator.fs = fse;
 
 describe('JHipster generator spring-cloud-stream', () => {
     describe('Test array property', () => {
@@ -121,10 +123,26 @@ describe('JHipster generator spring-cloud-stream', () => {
     });
     describe('Test yaml property', () => {
         describe('Get YAML property', () => {
-            // it('get property on array null', () => {
-            //     const result = utils.getYamlProperty('../test/templates/utils/application-dev.yml', 'spring', BaseGenerator);
-            //     expect(result).to.be.undefined();
-            // });
+          // beforeEach((done) => {
+          //     helpers
+          //         .run(path.join(__dirname, '../generators/app'))
+          //         .inTmpDir((dir) => {
+          //             fse.copySync(path.join(__dirname, '../test/templates/utils'), dir);
+          //         })
+          //         .withOptions({
+          //             testmode: true
+          //         })
+          //         .withPrompts({
+          //             message: 'simple message to say hello'
+          //         })
+          //         .on('end', done);
+          // });
+            it('get property that doesnt exist', () => {
+              let file= path.join(__dirname, '../test/templates/utils/application-dev.yml');
+  //            const filepath = path.resolve(__dirname, '../test/templates/utils/application-dev.yml');
+                  const result = utils.getYamlProperty(file, 'toto', BaseGenerator);
+                    expect(result).to.be.undefined();
+            });
         });
     });
 });

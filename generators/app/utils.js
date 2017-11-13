@@ -171,7 +171,7 @@ function diffArray(arr1, arr2, generator) {
  */
 function getYamlProperty(file, name, generator) {
     try {
-        const treeData = jsyaml.safeLoad(generator.fs.read(`${file}`));
+        const treeData = jsyaml.safeLoad(generator.fs.readFileSync(`${file}`, 'utf8'));
         return getPropertyInArray(treeData, name.toString().split('.'), generator);
     } catch (e) {
         generator.log(e);
