@@ -1,8 +1,8 @@
 package <%= packageName %>.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.mycompany.myapp.domain.JhiMessage;
-import com.mycompany.myapp.service.stream.MessageSink;
+import <%= packageName %>.domain.JhiMessage;
+import <%= packageName %>.service.stream.MessageSink;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.messaging.Source;

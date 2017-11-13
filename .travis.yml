@@ -2,13 +2,21 @@ os:
     - linux
 language: node_js
 node_js:
-    - "6.11.0"
+    - "8.9.1"
 before_install:
     - npm install -g npm
     - npm install -g yarn
+    - yarn global add yo
 install:
     - yarn install
     - yarn link
 script:
     - gulp eslint
     - gulp test
+    - cd $HOME
+    - mkdir 
+    - git clone https://github.com/jhipster/jhipster-sample-app-ng2
+    - cd jhipster-sample-app-ng2
+    - yarn link generator-jhipster-spring-cloud-stream
+    - yo jhipster-spring-cloud-stream default --force
+    - ./mvnw clean package -Pprod
