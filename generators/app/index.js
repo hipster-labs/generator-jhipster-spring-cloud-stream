@@ -8,6 +8,11 @@ const utils = require('./utils');
 module.exports = class extends BaseGenerator {
     get initializing() {
         return {
+            init(args) {
+                if (args === 'default') {
+                    this.defaultOptions = true;
+                }
+            },
             readConfig() {
                 this.jhipsterAppConfig = this.getJhipsterAppConfig();
                 if (!this.jhipsterAppConfig) {
@@ -33,6 +38,7 @@ module.exports = class extends BaseGenerator {
     }
 
     prompting() {
+        const done = this.async();
         const DEFAULT_BROKER_TYPE = 'RabbitMQ';
         const prompts = {
             type: 'list',
@@ -50,14 +56,19 @@ module.exports = class extends BaseGenerator {
             ],
             default: DEFAULT_BROKER_TYPE
         };
-
-        const done = this.async();
-        this.prompt(prompts).then((props) => {
-            this.props = props;
-            // To access props later use this.props.someOption;
-
+        if (this.defaultOptions) {
+            this.messageBrokerType = DEFAULT_BROKER_TYPE;
             done();
-        });
+        } else {
+            this.prompt(prompts).then((props) => {
+                this.props = props;
+                // To access props later use this.props.someOption;
+                
+                // variable from questions
+                this.messageBrokerType = this.props.messageBrokerType;
+                done();
+            });
+        }
     }
 
     writing() {
@@ -86,8 +97,7 @@ module.exports = class extends BaseGenerator {
         const resourceDir = jhipsterConstants.SERVER_MAIN_RES_DIR;
         const webappDir = jhipsterConstants.CLIENT_MAIN_SRC_DIR;
 
-        // variable from questions
-        this.messageBrokerType = this.props.messageBrokerType;
+
 
         // show all variables
         this.log('\n--- some config read from config ---');
@@ -111,9 +121,9 @@ module.exports = class extends BaseGenerator {
 
         // add dependencies
         if (this.buildTool === 'maven') {
-            this.addMavenDependency('org.springframework.cloud', 'spring-cloud-starter-stream-rabbit');
+            this.addMavenDependency('org.springframework.cloud', 'spring-cloud-starter-stream-rabbit', '1.3.0.RELEASE');
         } else if (this.buildTool === 'gradle') {
-            this.addGradleDependency('compile', 'org.springframework.cloud', 'spring-cloud-starter-stream-rabbit');
+            this.addGradleDependency('compile', 'org.springframework.cloud', 'spring-cloud-starter-stream-rabbit', '1.3.0.RELEASE');
         }
 
         // add docker-compose file
