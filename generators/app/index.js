@@ -22,7 +22,18 @@ module.exports = class extends BaseGenerator {
             displayLogo() {
                 // it's here to show that you can use functions from generator-jhipster
                 // this function is in: generator-jhipster/generators/generator-base.js
-                this.printJHipsterLogo();
+                const logo = '\n' +
+`${chalk.bold.yellow('               ████    ████        \n')}` +
+`${chalk.bold.yellow('               ████    ████        \n')}` +
+`${chalk.bold.yellow('               ████    ████        \n')}` +
+`${chalk.bold.yellow('               ████    ████        \n')}` +
+`${chalk.bold.yellow(`               ████████████████████\n`)}` +
+`${chalk.bold.yellow(`               ████████████████████\n`)}` +
+`${chalk.bold.yellow(`               ████████████    ████\n`)}` +
+`${chalk.bold.yellow(`               ████████████    ████\n`)}` +
+`${chalk.bold.yellow(`               ████████████████████\n`)}` +
+`${chalk.bold.yellow(`               ████████████████████`)}`;
+                this.log(logo);
 
                 // Have Yeoman greet the user.
                 this.log(`\nWelcome to the ${chalk.bold.yellow('JHipster spring-cloud-stream')} generator! ${chalk.yellow(`v${packagejs.version}\n`)}`);
