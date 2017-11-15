@@ -69,12 +69,7 @@ module.exports = {
  * @return {string} the value of property or undefined
  */
 function getPropertyInArray(array, name, generator) {
-    try {
-        return _.get(array, name);
-    } catch (e) {
-        generator.log(e);
-        return undefined;
-    }
+    return _.get(array, name);
 }
 
 /**
@@ -87,11 +82,7 @@ function getPropertyInArray(array, name, generator) {
  * @param {string} value - (optional) value of the property
  */
 function updatePropertyInArray(array, name, generator, value) {
-    try {
-        _.set(array, name, value);
-    } catch (e) {
-        generator.log(e);
-    }
+    _.set(array, name, value);
 }
 
 /**
@@ -103,11 +94,7 @@ function updatePropertyInArray(array, name, generator, value) {
  * @param {string} generator - The generator
  */
 function deletePropertyInArray(array, name, generator) {
-    try {
-        _.unset(array, name);
-    } catch (e) {
-        generator.log(e);
-    }
+    _.unset(array, name);
 }
 
 
@@ -121,35 +108,24 @@ function deletePropertyInArray(array, name, generator) {
  * @return {string} String path property
  */
 function diffArray(arr1, arr2, generator) {
-    try {
-        let strResult;
-        let result = [];
-        let reduc = _.reduce(arr1, (result, value, key) => (_.isEqual(value, arr2[key]) ? result : result.concat(key)), []);
+    let strResult;
+    let result = [];
+    let reduc = _.reduce(arr1, (result, value, key) => (_.isEqual(value, arr2[key]) ? result : result.concat(key)), []);
 
-        while (reduc && reduc.length > 0) {
-            result = result.concat(reduc);
-            arr1 = arr1[reduc[0]];
-            arr2 = arr2[reduc[0]];
-            if (arr1 === undefined || arr2 === undefined) {
-                return undefined;
-            }
-            // reduc = _.reduce(arr1, (result, value, key) => {
-            //     if (arr2[key]) {
-            //         return _.isEqual(value, arr2[key]) ? result : result.concat(key);
-            //     }
-            //     return false;
-            // }, []);
-            reduc = reduceYaml(arr1, arr2, result);
+    while (reduc && reduc.length > 0) {
+        result = result.concat(reduc);
+        arr1 = arr1[reduc[0]];
+        arr2 = arr2[reduc[0]];
+        if (arr1 === undefined || arr2 === undefined) {
+            return undefined;
         }
-
-        if (result !== undefined) {
-            strResult = result.join('.');
-        }
-        return strResult;
-    } catch (e) {
-        generator.log(e);
-        return undefined;
+        reduc = reduceYaml(arr1, arr2, result);
     }
+
+    if (result !== undefined) {
+        strResult = result.join('.');
+    }
+    return strResult;
 }
 
 /**
@@ -188,13 +164,8 @@ function reduceYaml(arr1, arr2, result) {
  * @return {string} the value of property or undefined
  */
 function getYamlProperty(file, name, generator) {
-    try {
-        const treeData = jsyaml.safeLoad(generator.fs.readFileSync(`${file}`, 'utf8'));
-        return getPropertyInArray(treeData, name.toString().split('.'), generator);
-    } catch (e) {
-        generator.log(e);
-        return undefined;
-    }
+    const treeData = jsyaml.safeLoad(generator.fs.readFileSync(`${file}`, 'utf8'));
+    return getPropertyInArray(treeData, name.toString().split('.'), generator);
 }
 
 /*
@@ -213,14 +184,10 @@ function getYamlProperty(file, name, generator) {
  * @param {string} generator - The generator
  */
 function addYamlPropertiesAtBeginin(file, properties, generator) {
-    try {
-        const bodyLines = generator.fs.read(file).split('\n');
-        const newLines = jsyaml.safeDump(properties, { indent: 4 }).split('\n');
-        bodyLines.splice(bodyLines.count, 0, newLines.join('\n'));
-        generator.fs.write(file, bodyLines.join('\n'));
-    } catch (e) {
-        generator.log(e);
-    }
+    const bodyLines = generator.fs.readFileSync(`${file}`, 'utf8').split('\n');
+    const newLines = jsyaml.safeDump(properties, { indent: 4 }).split('\n');
+    bodyLines.splice(bodyLines.count, 0, newLines.join('\n'));
+    generator.fs.writeFileSync(`${file}`, bodyLines.join('\n'), 'utf8');
 }
 
 /**
@@ -231,13 +198,9 @@ function addYamlPropertiesAtBeginin(file, properties, generator) {
  * @param {string} generator - The generator
  */
 function addYamlPropertiesAtEnd(file, properties, generator) {
-    try {
-        const bodyLines = generator.fs.read(file).split('\n');
-        const newLines = jsyaml.safeDump(properties, { indent: 4 }).split('\n');
-        generator.fs.write(file, bodyLines.concat(newLines).join('\n'));
-    } catch (e) {
-        generator.log(e);
-    }
+    const bodyLines = generator.fs.readFileSync(`${file}`, 'utf8').split('\n');
+    const newLines = jsyaml.safeDump(properties, { indent: 4 }).split('\n');
+    generator.fs.writeFileSync(`${file}`, bodyLines.concat(newLines).join('\n'), 'utf8');
 }
 
 /**
@@ -250,16 +213,15 @@ function addYamlPropertiesAtEnd(file, properties, generator) {
  * @param {string} addBeforeComment - (Optional) if this variable is defined, means that we will return the index before the previuous comment of the property.
  */
 function addYamlPropertiesBeforeAnotherProperty(file, properties, generator, propertyBefore, addBeforeComment) {
-    try {
-        const body = generator.fs.read(file);
-        const newLines = jsyaml.safeDump(properties, { indent: 4 }).split('\n');
-        const applicationPropertyIndex = getIndexBeforeLineOfProperty(body, propertyBefore, generator, addBeforeComment);
-        const bodyLines = body.split('\n');
-        bodyLines.splice(applicationPropertyIndex, 0, newLines.join('\n'));
-        generator.fs.write(file, bodyLines.join('\n'));
-    } catch (e) {
-        generator.log(e);
+    const body = generator.fs.readFileSync(`${file}`, 'utf8');
+    const newLines = jsyaml.safeDump(properties, { indent: 4 }).split('\n');
+    const applicationPropertyIndex = getIndexBeforeLineOfProperty(body, propertyBefore, generator, addBeforeComment);
+    if (applicationPropertyIndex === -1) {
+        throw new Error(`Property ${propertyBefore} not found`); // inside callback
     }
+    const bodyLines = body.split('\n');
+    bodyLines.splice(applicationPropertyIndex, 0, newLines.join('\n'));
+    generator.fs.writeFileSync(`${file}`, bodyLines.join('\n'), 'utf8');
 }
 
 /**
@@ -271,16 +233,15 @@ function addYamlPropertiesBeforeAnotherProperty(file, properties, generator, pro
  * @param {string} propertyAfter - The property after which we wish to insert new properties
  */
 function addYamlPropertiesAfterAnotherProperty(file, properties, generator, propertyAfter) {
-    try {
-        const body = generator.fs.read(file);
-        const newLines = jsyaml.safeDump(properties, { indent: 4 }).split('\n');
-        const applicationPropertyIndex = getIndexAfterLineOfProperty(body, propertyAfter, generator);
-        const bodyLines = body.split('\n');
-        bodyLines.splice(applicationPropertyIndex, 0, newLines.join('\n'));
-        generator.fs.write(file, bodyLines.join('\n'));
-    } catch (e) {
-        generator.log(e);
+    const body = generator.fs.readFileSync(`${file}`, 'utf8');
+    const newLines = jsyaml.safeDump(properties, { indent: 4 }).split('\n');
+    const applicationPropertyIndex = getIndexAfterLineOfProperty(body, propertyAfter, generator);
+    if (applicationPropertyIndex === -1) {
+        throw new Error(`Property ${propertyAfter} not found`); // inside callback
     }
+    const bodyLines = body.split('\n');
+    bodyLines.splice(applicationPropertyIndex, 0, newLines.join('\n'));
+    generator.fs.writeFileSync(`${file}`, bodyLines.join('\n'), 'utf8');
 }
 
 /**
@@ -293,16 +254,15 @@ function addYamlPropertiesAfterAnotherProperty(file, properties, generator, prop
  * @param {string} numberSpace - number espace to start
  */
 function addYamlPropertiesAtLineIndex(file, properties, generator, indexLine, numberSpace) {
-    try {
-        const body = generator.fs.read(file);
-        const newLines = jsyaml.safeDump(properties, { indent: 4 }).split('\n');
-        const bodyLines = body.split('\n');
-
-        bodyLines.splice(indexLine, 0, newLines.map(line => numberSpace + line).join('\n'));
-        generator.fs.write(file, bodyLines.join('\n'));
-    } catch (e) {
-        generator.log(e);
+    const body = generator.fs.readFileSync(`${file}`, 'utf8');
+    const newLines = jsyaml.safeDump(properties, { indent: 4 }).split('\n');
+    const bodyLines = body.split('\n');
+    let spaceStr = '';
+    for (let i = 0; i < numberSpace; i++) {
+        spaceStr += ' ';
     }
+    bodyLines.splice(indexLine, 0, newLines.map(line => spaceStr + line).join('\n'));
+    generator.fs.writeFileSync(`${file}`, bodyLines.join('\n'), 'utf8');
 }
 /*
 ██    ██  █████  ███    ███ ██          ███████ ██ ██      ███████     ███    ███  █████  ███    ██ ██ ██████  ██    ██ ██       █████  ████████ ███████     ██████  ██████   ██████  ██████  ███████ ██████  ████████ ██    ██
@@ -322,13 +282,9 @@ function addYamlPropertiesAtLineIndex(file, properties, generator, indexLine, nu
  * @param {string} generator - The generator
  */
 function addYamlPropertyAtBeginin(file, property, value, generator) {
-    try {
-        const properties = {};
-        updatePropertyInArray(properties, property, generator, value);
-        addYamlPropertiesAtBeginin(file, properties, generator);
-    } catch (e) {
-        generator.log(e);
-    }
+    const properties = {};
+    updatePropertyInArray(properties, property, generator, value);
+    addYamlPropertiesAtBeginin(file, properties, generator);
 }
 
 /**
@@ -341,13 +297,9 @@ function addYamlPropertyAtBeginin(file, property, value, generator) {
  * @param {string} generator - The generator
  */
 function addYamlPropertyAtEnd(file, property, value, generator) {
-    try {
-        const properties = {};
-        updatePropertyInArray(properties, property, generator, value);
-        addYamlPropertiesAtEnd(file, properties, generator);
-    } catch (e) {
-        generator.log(e);
-    }
+    const properties = {};
+    updatePropertyInArray(properties, property, generator, value);
+    addYamlPropertiesAtEnd(file, properties, generator);
 }
 
 /**
@@ -361,13 +313,9 @@ function addYamlPropertyAtEnd(file, property, value, generator) {
  * @param {string} addBeforeComment - (Optional) if this variable is defined, means that we will return the index before the previuous comment of the property.
  */
 function addYamlPropertyBeforeAnotherProperty(file, property, value, generator, propertyBefore, addBeforeComment) {
-    try {
-        const properties = {};
-        updatePropertyInArray(properties, property, generator, value);
-        addYamlPropertiesBeforeAnotherProperty(file, properties, generator, propertyBefore, addBeforeComment);
-    } catch (e) {
-        generator.log(e);
-    }
+    const properties = {};
+    updatePropertyInArray(properties, property, generator, value);
+    addYamlPropertiesBeforeAnotherProperty(file, properties, generator, propertyBefore, addBeforeComment);
 }
 
 /**
@@ -380,13 +328,9 @@ function addYamlPropertyBeforeAnotherProperty(file, property, value, generator, 
  * @param {string} propertyAfter - The property before which we wish to insert new property
  */
 function addYamlPropertyAfterAnotherProperty(file, property, value, generator, propertyAfter) {
-    try {
-        const properties = {};
-        updatePropertyInArray(properties, property, generator, value);
-        addYamlPropertiesAfterAnotherProperty(file, properties, generator, propertyAfter);
-    } catch (e) {
-        generator.log(e);
-    }
+    const properties = {};
+    updatePropertyInArray(properties, property, generator, value);
+    addYamlPropertiesAfterAnotherProperty(file, properties, generator, propertyAfter);
 }
 
 /**
@@ -397,15 +341,12 @@ function addYamlPropertyAfterAnotherProperty(file, property, value, generator, p
  * @param {string} value - value of property
  * @param {string} generator - The generator
  * @param {string} indexLine - Index of line which we wish to insert new properties
+ * @param {string} numberSpace - number espace to start
  */
-function addYamlPropertyAtLineIndex(file, property, value, generator, indexLine) {
-    try {
-        const properties = {};
-        updatePropertyInArray(properties, property, generator, value);
-        addYamlPropertiesAtLineIndex(file, properties, generator, indexLine);
-    } catch (e) {
-        generator.log(e);
-    }
+function addYamlPropertyAtLineIndex(file, property, value, generator, indexLine, numberSpace) {
+    const properties = {};
+    updatePropertyInArray(properties, property, generator, value);
+    addYamlPropertiesAtLineIndex(file, properties, generator, indexLine, numberSpace);
 }
 /*
 ███████ ██    ██ ███    ██  ██████ ████████ ██  ██████  ███    ██ ███████
@@ -428,7 +369,6 @@ function getLastPropertyCommonHierarchy(body, property, generator) {
         const hierProperty = {};
         _.set(hierProperty, property, null);
         const arr = jsyaml.safeLoad(body);
-
         return diffArray(hierProperty, arr, generator);
     } catch (e) {
         generator.log(e);
@@ -459,7 +399,7 @@ function getLastPropertiesCommonHierarchy(body, properties, generator) {
  * @param {string} body - String body to search
  * @param {string} property - property name to search
  * @param {string} generator - The generator
- * @param {string} addBeforeComment - (Optional) if this variable is defined, means that we will return the index before the previuous comment of the property.
+ * @param {boolean} addBeforeComment - if this variable is true, means that we will return the index before the previuous comment of the property.
  */
 function getIndexBeforeLineOfProperty(body, property, generator, addBeforeComment) {
     try {
@@ -468,14 +408,13 @@ function getIndexBeforeLineOfProperty(body, property, generator, addBeforeCommen
         let otherwiseLineIndex = -1;
         lines.some((line, i) => {
             if ((line.indexOf('#') === -1) && (line.indexOf(`${property}:`) !== -1)) {
-                generator.log(line);
                 otherwiseLineIndex = i;
                 return true;
             }
             return false;
         });
 
-        if (addBeforeComment) {
+        if (addBeforeComment === true) {
             for (let i = otherwiseLineIndex - 1; i > 0; i--) {
                 if (lines[i].indexOf('#') !== -1 || (/^\s*$/.test(lines[i]))) {
                     otherwiseLineIndex = i;
@@ -483,6 +422,7 @@ function getIndexBeforeLineOfProperty(body, property, generator, addBeforeCommen
                     break;
                 }
             }
+            otherwiseLineIndex += 1;
         }
         return otherwiseLineIndex;
     } catch (e) {
@@ -490,71 +430,98 @@ function getIndexBeforeLineOfProperty(body, property, generator, addBeforeCommen
         return -1;
     }
 }
-function hasProperty(array, property) {
-    let returnIndex;
-    array.some((line, i) => {
-        // generator.log(line);
-        if ((line.indexOf('#') === -1) && (line.indexOf(`${property}:`) !== -1)) {
+
+/**
+ * Array of line of yaml file has a property ?
+ *
+ * @param {array} array - String body to search
+ * @param {string} property - property name to search
+* @param {int} fromIdx - start search from
+ * @param {string} generator - The generator
+ */
+function hasProperty(array, property, fromIdx, generator) {
+    let returnIndex = -1;
+    if (fromIdx === -1) {
+        fromIdx = 0;
+    }
+    for (let i = fromIdx; i < array.length; i++) {
+        const line = array[i];
+
+        if ((line.indexOf(`${property}:`) !== -1) &&
+            ((line.indexOf('#') === -1) || ((line.indexOf('#') !== -1) && (line.indexOf('#') > line.indexOf(`${property}:`))))
+        ) {
+            // generator.log(`line ${line}`);
             returnIndex = i;
-            return true;
+            break;
         }
-        return false;
-    });
+    }
     return returnIndex;
 }
+
 /**
  * get index of line of property
  *
  * @param {string} body - String body to search
  * @param {string} property - property name to search
  * @param {string} generator - The generator
+  * @param {string} ignorecur - (Optional) If define, return the index at the end all the properties child of the property.
+  * If not define, return the index at the end all the properties of the parent property.
  */
-function getIndexAfterLineOfProperty(body, property, generator, addBeforeComment) {
-    try {
-        const lines = body.split('\n');
-        // generator.log('property : ' + property);
-        let otherwiseLineIndex = -1;
-        let curr;
-        const namePath = property.split('.');
-        // generator.log('namePath : ' + namePath);
+function getIndexAfterLineOfProperty(body, property, generator, ignorecur) {
+    const lines = body.split('\n');
+    // generator.log('property : ' + property);
+    let otherwiseLineIndex = -1;
+    let curr;
 
+    const namePath = property.split('.');
+    // generator.log('namePath : ' + namePath);
+
+    curr = namePath.splice(0, 1);
+
+    while (curr !== undefined) {
+        //  generator.log(`Property name cur : ${curr}`);
+        otherwiseLineIndex = hasProperty(lines, curr, otherwiseLineIndex, generator);
+        // generator.log(`index line : ${otherwiseLineIndex}`);
+        // generator.log(`cur props : ${curr}`);
         curr = namePath.splice(0, 1)[0];
+    }
 
-        while (curr !== undefined) {
-            otherwiseLineIndex = hasProperty(lines, curr);
-            // generator.log('cur props : ' + curr);
-            curr = namePath.splice(0, 1)[0];
-        }
-        // generator.log('indexe line : ' + otherwiseLineIndex);
-        if (otherwiseLineIndex === -1) {
-            return otherwiseLineIndex;
-        }
-        let spaces = 0;
-        while (lines[otherwiseLineIndex].charAt(spaces) === ' ') {
-            spaces += 1;
-        }
-        // generator.log('space number : ' + spaces);
-        let spacesNext = 0;
-        for (let i = otherwiseLineIndex + 1; i < lines.length; i++) {
-            // generator.log('next line : ' + lines[i]);
-            // si la ligne suivante a le meme nombre d'espace que la propriéte, on considere que c'est une nouvelle propriété
+
+    if (otherwiseLineIndex === -1) {
+        return otherwiseLineIndex;
+    }
+    if (ignorecur) {
+        otherwiseLineIndex += 1;
+    }
+
+    let spaces = 0;
+    // generator.log(`otherwiseLineIndex : ${otherwiseLineIndex}`);
+    while (lines[otherwiseLineIndex].charAt(spaces) === ' ') {
+        spaces += 1;
+    }
+    // generator.log(`space number : ${spaces}`);
+    let spacesNext = 0;
+    for (let i = otherwiseLineIndex + 1; i < lines.length; i++) {
+        //  generator.log(`next line : ${lines[i]}`);
+        // line  by comments
+        if (lines[i].trim().indexOf('#') !== 0) {
             spacesNext = 0;
             while (lines[i].charAt(spacesNext) === ' ') {
                 spacesNext += 1;
             }
-            // generator.log('next line space: ' +spacesNext);
-            if (spaces !== spacesNext) {
+            // generator.log(`spaces: ${spaces}`);
+            // generator.log(`spacesNext: ${spacesNext}`);
+            // if next line has same number of space or more than the property, then it's a new property
+            if (spacesNext >= spaces && spacesNext !== 0) {
                 otherwiseLineIndex = i;
+                //  generator.log(`idx: ${otherwiseLineIndex}`);
             } else {
                 break;
             }
         }
-
-        return otherwiseLineIndex + 1;
-    } catch (e) {
-        generator.log(e);
-        return -1;
     }
+
+    return otherwiseLineIndex + 1;
 }
 
 
@@ -603,30 +570,27 @@ function updateYamlProperties(file, properties, generator) {
     try {
         let propertyParentFound = false;
 
-        const body = generator.fs.read(file);
-
+        const body = generator.fs.readFileSync(`${file}`, 'utf8');
+        //  generator.log(` properties : ${properties}`);
         const propExist = getLastPropertiesCommonHierarchy(body, properties, generator);
 
         if (propExist !== undefined) {
             propertyParentFound = true;
             // generator.log(`Property commune ${propExist} FOUND\n`);
             const arrPropExist = propExist.split('.');
-            let spaces = arrPropExist.length * 4;
-            let spaceStr = '';
+            const spaces = arrPropExist.length * 4;
+            //  generator.log(`space ${spaces}`);
 
-            while ((spaces -= 1) >= 0) { // eslint-disable-line no-cond-assign
-                spaceStr += ' ';
-            }
-            const indexLineProps = getIndexAfterLineOfProperty(body, propExist, generator);
-            // generator.log("line index " + indexLineProps);
+            const indexLineProps = getIndexAfterLineOfProperty(body, propExist, generator, true);
+            //  generator.log(`line index ${indexLineProps}`);
 
             let removeArray = properties;
             for (let i = 0; i < arrPropExist.length; i++) {
                 removeArray = removeArray[arrPropExist[i]];
             }
-            // generator.log(removeArray);
+            // generator.log(`removeArray ${removeArray}`);
 
-            addYamlPropertiesAtLineIndex(file, removeArray, generator, indexLineProps, spaceStr);
+            addYamlPropertiesAtLineIndex(file, removeArray, generator, indexLineProps, spaces);
         }
         if (propertyParentFound === false) {
             // generator.log('Property Parent not FOUND\n');
