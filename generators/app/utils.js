@@ -571,7 +571,7 @@ function updateYamlProperties(file, properties, generator) {
         let propertyParentFound = false;
 
         const body = generator.fs.readFileSync(`${file}`, 'utf8');
-        //  generator.log(` properties : ${properties}`);
+        // generator.log(` properties : ${properties}`);
         const propExist = getLastPropertiesCommonHierarchy(body, properties, generator);
 
         if (propExist !== undefined) {
@@ -579,10 +579,10 @@ function updateYamlProperties(file, properties, generator) {
             // generator.log(`Property commune ${propExist} FOUND\n`);
             const arrPropExist = propExist.split('.');
             const spaces = arrPropExist.length * 4;
-            //  generator.log(`space ${spaces}`);
+            // generator.log(`space ${spaces}`);
 
             const indexLineProps = getIndexAfterLineOfProperty(body, propExist, generator, true);
-            //  generator.log(`line index ${indexLineProps}`);
+            // generator.log(`line index ${indexLineProps}`);
 
             let removeArray = properties;
             for (let i = 0; i < arrPropExist.length; i++) {
