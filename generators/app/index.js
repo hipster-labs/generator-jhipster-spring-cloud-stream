@@ -4,6 +4,7 @@ const semver = require('semver');
 const BaseGenerator = require('generator-jhipster/generators/generator-base');
 const jhipsterConstants = require('generator-jhipster/generators/generator-constants');
 const utils = require('./utils');
+const fse = require('fs-extra');
 
 module.exports = class extends BaseGenerator {
     get initializing() {
@@ -27,12 +28,12 @@ module.exports = class extends BaseGenerator {
 `${chalk.bold.yellow('               ████    ████        \n')}` +
 `${chalk.bold.yellow('               ████    ████        \n')}` +
 `${chalk.bold.yellow('               ████    ████        \n')}` +
-`${chalk.bold.yellow(`               ████████████████████\n`)}` +
-`${chalk.bold.yellow(`               ████████████████████\n`)}` +
-`${chalk.bold.yellow(`               ████████████    ████\n`)}` +
-`${chalk.bold.yellow(`               ████████████    ████\n`)}` +
-`${chalk.bold.yellow(`               ████████████████████\n`)}` +
-`${chalk.bold.yellow(`               ████████████████████`)}`;
+`${chalk.bold.yellow('               ████████████████████\n')}` +
+`${chalk.bold.yellow('               ████████████████████\n')}` +
+`${chalk.bold.yellow('               ████████████    ████\n')}` +
+`${chalk.bold.yellow('               ████████████    ████\n')}` +
+`${chalk.bold.yellow('               ████████████████████\n')}` +
+`${chalk.bold.yellow('               ████████████████████')}`;
                 this.log(logo);
 
                 // Have Yeoman greet the user.
@@ -50,6 +51,8 @@ module.exports = class extends BaseGenerator {
 
     prompting() {
         const done = this.async();
+        this.fs.readFileSync = fse.readFileSync;
+        this.fs.writeFileSync = fse.writeFileSync;
         const DEFAULT_BROKER_TYPE = 'RabbitMQ';
         const prompts = {
             type: 'list',
@@ -74,7 +77,7 @@ module.exports = class extends BaseGenerator {
             this.prompt(prompts).then((props) => {
                 this.props = props;
                 // To access props later use this.props.someOption;
-                
+
                 // variable from questions
                 this.messageBrokerType = this.props.messageBrokerType;
                 done();
@@ -106,27 +109,8 @@ module.exports = class extends BaseGenerator {
         // use constants from generator-constants.js
         const javaDir = `${jhipsterConstants.SERVER_MAIN_SRC_DIR + this.packageFolder}/`;
         const resourceDir = jhipsterConstants.SERVER_MAIN_RES_DIR;
-        const webappDir = jhipsterConstants.CLIENT_MAIN_SRC_DIR;
+        // const webappDir = jhipsterConstants.CLIENT_MAIN_SRC_DIR;
 
-
-
-        // show all variables
-        this.log('\n--- some config read from config ---');
-        this.log(`baseName=${this.baseName}`);
-        this.log(`packageName=${this.packageName}`);
-        this.log(`clientFramework=${this.clientFramework}`);
-        this.log(`clientPackageManager=${this.clientPackageManager}`);
-        this.log(`buildTool=${this.buildTool}`);
-
-        this.log('\n--- some function ---');
-        this.log(`angularAppName=${this.angularAppName}`);
-
-        this.log('\n--- some const ---');
-        this.log(`javaDir=${javaDir}`);
-        this.log(`resourceDir=${resourceDir}`);
-        this.log(`webappDir=${webappDir}`);
-
-        this.log('\n--- variables from questions ---');
         this.log(`\nmessage broker type = ${this.messageBrokerType}`);
         this.log('------\n');
 
@@ -147,15 +131,22 @@ module.exports = class extends BaseGenerator {
 
         // application-dev.yml
         const yamlAppDevProperties = {};
+        // utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, 'spring.cloud.stream.default.contentType',  'application/json', this);
+        // utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, 'spring.cloud.stream.bindings.input.destination' , 'topic-jhipster', this)
+        // utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, 'spring.cloud.stream.bindings.output.destination','topic-jhipster', this );
+        //   utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression','headers.title', this );
         utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.default.contentType', this, 'application/json');
         utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.input.destination', this, 'topic-jhipster');
         utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.output.destination', this, 'topic-jhipster');
         utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', this, 'headers.title');
         utils.updateYamlProperties(`${resourceDir}config/application-dev.yml`, yamlAppDevProperties, this);
+
         // application-prod.yml
         const yamlAppProdProperties = yamlAppDevProperties;
         utils.updatePropertyInArray(yamlAppProdProperties, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', this, 'payload.title');
         utils.updateYamlProperties(`${resourceDir}config/application-prod.yml`, yamlAppProdProperties, this);
+
+
         // utils.addYamlPropertiesAfterAnotherProperty(`${resourceDir}config/application-dev.yml`, yamlAppDevProperties, this, 'liquibase');
         // utils.addYamlPropertyAfterAnotherProperty(`${resourceDir}config/application-dev.yml`, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', 'headers.title',  this, 'liquibase');
 
@@ -174,32 +165,32 @@ module.exports = class extends BaseGenerator {
     }
 
     install() {
-        // let logMsg =
-        //     `To install your dependencies manually, run: ${chalk.yellow.bold(`${this.clientPackageManager} install`)}`;
-        //
-        // if (this.clientFramework === 'angular1') {
-        //     logMsg =
-        //         `To install your dependencies manually, run: ${chalk.yellow.bold(`${this.clientPackageManager} install & bower install`)}`;
-        // }
-        // const injectDependenciesAndConstants = (err) => {
-        //     if (err) {
-        //         this.warning('Install of dependencies failed!');
-        //         this.log(logMsg);
-        //     } else if (this.clientFramework === 'angular1') {
-        //         this.spawnCommand('gulp', ['install']);
-        //     }
-        // };
-        // const installConfig = {
-        //     bower: this.clientFramework === 'angular1',
-        //     npm: this.clientPackageManager !== 'yarn',
-        //     yarn: this.clientPackageManager === 'yarn',
-        //     callback: injectDependenciesAndConstants
-        // };
-        // if (this.options['skip-install']) {
-        //     this.log(logMsg);
-        // } else {
-        //     this.installDependencies(installConfig);
-        // }
+        let logMsg =
+            `To install your dependencies manually, run: ${chalk.yellow.bold(`${this.clientPackageManager} install`)}`;
+
+        if (this.clientFramework === 'angular1') {
+            logMsg =
+                `To install your dependencies manually, run: ${chalk.yellow.bold(`${this.clientPackageManager} install & bower install`)}`;
+        }
+        const injectDependenciesAndConstants = (err) => {
+            if (err) {
+                this.warning('Install of dependencies failed!');
+                this.log(logMsg);
+            } else if (this.clientFramework === 'angular1') {
+                this.spawnCommand('gulp', ['install']);
+            }
+        };
+        const installConfig = {
+            bower: this.clientFramework === 'angular1',
+            npm: this.clientPackageManager !== 'yarn',
+            yarn: this.clientPackageManager === 'yarn',
+            callback: injectDependenciesAndConstants
+        };
+        if (this.options['skip-install']) {
+            this.log(logMsg);
+        } else {
+            this.installDependencies(installConfig);
+        }
     }
 
     end() {
