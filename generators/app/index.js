@@ -24,16 +24,16 @@ module.exports = class extends BaseGenerator {
                 // it's here to show that you can use functions from generator-jhipster
                 // this function is in: generator-jhipster/generators/generator-base.js
                 const logo = '\n' +
-`${chalk.bold.yellow('               ████    ████        \n')}` +
-`${chalk.bold.yellow('               ████    ████        \n')}` +
-`${chalk.bold.yellow('               ████    ████        \n')}` +
-`${chalk.bold.yellow('               ████    ████        \n')}` +
-`${chalk.bold.yellow('               ████████████████████\n')}` +
-`${chalk.bold.yellow('               ████████████████████\n')}` +
-`${chalk.bold.yellow('               ████████████    ████\n')}` +
-`${chalk.bold.yellow('               ████████████    ████\n')}` +
-`${chalk.bold.yellow('               ████████████████████\n')}` +
-`${chalk.bold.yellow('               ████████████████████')}`;
+                    `${chalk.bold.yellow('               ████    ████        \n')}` +
+                    `${chalk.bold.yellow('               ████    ████        \n')}` +
+                    `${chalk.bold.yellow('               ████    ████        \n')}` +
+                    `${chalk.bold.yellow('               ████    ████        \n')}` +
+                    `${chalk.bold.yellow('               ████████████████████\n')}` +
+                    `${chalk.bold.yellow('               ████████████████████\n')}` +
+                    `${chalk.bold.yellow('               ████████████    ████\n')}` +
+                    `${chalk.bold.yellow('               ████████████    ████\n')}` +
+                    `${chalk.bold.yellow('               ████████████████████\n')}` +
+                    `${chalk.bold.yellow('               ████████████████████')}`;
                 this.log(logo);
 
                 // Have Yeoman greet the user.
@@ -86,6 +86,8 @@ module.exports = class extends BaseGenerator {
     }
 
     writing() {
+        const STREAM_RABBIT_VERSION = '1.3.0.RELEASE';
+
         // function to use directly template
         this.template = function (source, destination) {
             this.fs.copyTpl(
@@ -116,9 +118,9 @@ module.exports = class extends BaseGenerator {
 
         // add dependencies
         if (this.buildTool === 'maven') {
-            this.addMavenDependency('org.springframework.cloud', 'spring-cloud-starter-stream-rabbit', '1.3.0.RELEASE');
+            this.addMavenDependency('org.springframework.cloud', 'spring-cloud-starter-stream-rabbit', STREAM_RABBIT_VERSION);
         } else if (this.buildTool === 'gradle') {
-            this.addGradleDependency('compile', 'org.springframework.cloud', 'spring-cloud-starter-stream-rabbit', '1.3.0.RELEASE');
+            this.addGradleDependency('compile', 'org.springframework.cloud', 'spring-cloud-starter-stream-rabbit', STREAM_RABBIT_VERSION);
         }
 
         // add docker-compose file
@@ -130,11 +132,7 @@ module.exports = class extends BaseGenerator {
         this.template('src/main/java/package/web/rest/_MessageResource.java', `${javaDir}web/rest/MessageResource.java`);
 
         // application-dev.yml
-        const yamlAppDevProperties = {};
-        // utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, 'spring.cloud.stream.default.contentType',  'application/json', this);
-        // utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, 'spring.cloud.stream.bindings.input.destination' , 'topic-jhipster', this)
-        // utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, 'spring.cloud.stream.bindings.output.destination','topic-jhipster', this );
-        //   utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression','headers.title', this );
+        const yamlAppDevProperties = { };
         utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.default.contentType', this, 'application/json');
         utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.input.destination', this, 'topic-jhipster');
         utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.output.destination', this, 'topic-jhipster');
@@ -145,23 +143,6 @@ module.exports = class extends BaseGenerator {
         const yamlAppProdProperties = yamlAppDevProperties;
         utils.updatePropertyInArray(yamlAppProdProperties, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', this, 'payload.title');
         utils.updateYamlProperties(`${resourceDir}config/application-prod.yml`, yamlAppProdProperties, this);
-
-
-        // utils.addYamlPropertiesAfterAnotherProperty(`${resourceDir}config/application-dev.yml`, yamlAppDevProperties, this, 'liquibase');
-        // utils.addYamlPropertyAfterAnotherProperty(`${resourceDir}config/application-dev.yml`, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', 'headers.title',  this, 'liquibase');
-
-        // const body = this.fs.read(`${resourceDir}config/application-dev.yml`);
-        // utils.getLastPropertyCommonHierarchy(body, 'toto.spring.profiles.cloud.stream.default.contentType', this,  true);
-        // utils.addYamlPropertiesBeforeAnotherProperty(`${resourceDir}config/application-dev.yml`, yamlAppDevProperties, this, 'application', true);
-        // const property_value=utils.getYamlProperty(`${resourceDir}config/application-dev.yml`, 'jhipster.cache.ehcache.time-to-live-seconds', this);
-        // this.log(`\nproperty value of jhipster.cache.ehcache.time-to-live-seconds : ${property_value}\n`);
-        // utils.updateYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'jhipster.cache.ehcache.time-to-live-seconds', 'toto');
-        //
-        // utils.deleteYamlProperty(`${resourceDir}config/application-dev.yml`, this, 'jhipster.cache.ehcache.time-to-live-seconds');
-        // const property_delete=utils.getYamlProperty(`${resourceDir}config/application-dev.yml`, 'jhipster.cache.ehcache.time-to-live-seconds', this);
-        // this.log(`\nproperty value of jhipster.cache.ehcache.time-to-live-seconds : ${property_delete}\n`);
-
-        // add Spring Boot configuration
     }
 
     install() {

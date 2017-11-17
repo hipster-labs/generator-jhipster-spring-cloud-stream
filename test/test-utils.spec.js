@@ -9,12 +9,15 @@ const dirtyChai = require('dirty-chai');
 const path = require('path');
 // const crypto = require('crypto');
 const os = require('os');
+const jsyaml = require('js-yaml');
 
 chai.use(dirtyChai);
 const expect = chai.expect;
 const BaseGenerator = require('generator-jhipster/generators/generator-base');
 // const BaseGenerator = this;
-BaseGenerator.log = (msg) => { console.log(msg); }; // eslint-disable-line no-console
+BaseGenerator.log = (msg) => {
+    console.log(msg);// eslint-disable-line no-console
+};
 BaseGenerator.fs = fse;
 
 
@@ -41,7 +44,7 @@ describe('JHipster generator spring-cloud-stream', () => {
                 expect(result).to.be.undefined();
             });
             it('get property on array empty', () => {
-                const result = utils.getPropertyInArray({}, 'test', BaseGenerator);
+                const result = utils.getPropertyInArray({ }, 'test', BaseGenerator);
                 expect(result).to.be.undefined();
             });
             it('get a simple property that does not exist in a non-empty array', () => {
@@ -76,7 +79,7 @@ describe('JHipster generator spring-cloud-stream', () => {
                 expect(result).to.be.undefined();
             });
             it('update property on array empty', () => {
-                const result = utils.updatePropertyInArray({}, 'spring.cloud', BaseGenerator, 'value');
+                const result = utils.updatePropertyInArray({ }, 'spring.cloud', BaseGenerator, 'value');
                 expect(result).to.be.undefined();
             });
             it('add a simple property that does not exist in a non-empty array', () => {
@@ -104,7 +107,7 @@ describe('JHipster generator spring-cloud-stream', () => {
                 expect(result).to.be.undefined();
             });
             it('Delete property on array empty', () => {
-                const result = utils.deletePropertyInArray({}, 'spring.cloud', BaseGenerator, 'value');
+                const result = utils.deletePropertyInArray({ }, 'spring.cloud', BaseGenerator, 'value');
                 expect(result).to.be.undefined();
             });
             it('Delete a simple property that does not exist in a non-empty array', () => {
@@ -273,12 +276,6 @@ describe('JHipster generator spring-cloud-stream', () => {
                 expect(lines[16].indexOf('stream')).not.eql(-1);
                 deleteDirTemp(file);
             });
-            it.skip('add yaml properties before complex property that is on one line or more (ex hibernate.id.new_generator_mappings)', () => {
-
-            });
-            it.skip('add yaml properties after complex property that is on one line or more (ex hibernate.id.new_generator_mappings)', () => {
-
-            });
         });
         describe('Add YAML property', () => {
             it('add property at beginin of file', () => {
@@ -387,12 +384,6 @@ describe('JHipster generator spring-cloud-stream', () => {
                 expect(lines[16].indexOf('stream')).not.eql(-1);
                 deleteDirTemp(file);
             });
-            it.skip('add yaml property before complex property that is on one line or more (ex hibernate.id.new_generator_mappings)', () => {
-
-            });
-            it.skip('add yaml property after complex property that is on one line or more (ex hibernate.id.new_generator_mappings)', () => {
-
-            });
         });
         describe('Add YAML property, updateYamlProperty (Intelligent method of adding a property in yaml)', () => {
             it('add a property that don\'t exist in the file', () => {
@@ -445,6 +436,18 @@ describe('JHipster generator spring-cloud-stream', () => {
                 expect(lines[105].indexOf('stream'), 'stream').not.eql(-1);
                 deleteDirTemp(file);
             });
+            it('add yaml property before complex property that is on one line or more (ex hibernate.id.new_generator_mappings)', () => {
+                const file = copyYamlTemp('../test/templates/utils/application-dev.yml', 'application-dev.yml');
+                utils.updateYamlProperty(file, 'spring.jpa.properties.hibernate.id.toto', 'stream', BaseGenerator);
+                const result = utils.getYamlProperty(file, 'spring.jpa.properties.hibernate.id.toto', BaseGenerator);
+                expect(result).eql('stream');
+                const lines = BaseGenerator.fs.readFileSync(`${file}`, 'utf8').split('\n');
+                expect(lines[44].indexOf('hibernate:')).eql(12);
+                expect(lines[45].indexOf('id:')).eql(16);
+                expect(lines[46].indexOf('toto:')).eql(20);
+                expect(lines[46].indexOf('stream')).not.eql(-1);
+                deleteDirTemp(file);
+            });
         });
         describe('Add YAML properties, updateYamlProperties (Intelligent method of adding properties in yaml)', () => {
             it('add properties that don\'t exist in the file', () => {
@@ -470,7 +473,7 @@ describe('JHipster generator spring-cloud-stream', () => {
                 expect(lines[53].indexOf('stream')).not.eql(-1);
                 deleteDirTemp(file);
             });
-            it('add a property that exist partially in the file two levels', () => {
+            it('add properties that exist partially in the file two levels', () => {
                 const file = copyYamlTemp('../test/templates/utils/application-dev.yml', 'application-dev.yml');
                 const yaml = { spring: { profiles: { test: 'stream' } } };
                 utils.updateYamlProperties(file, yaml, BaseGenerator);
@@ -483,10 +486,9 @@ describe('JHipster generator spring-cloud-stream', () => {
                 expect(lines[19].indexOf('stream'), 'stream').not.eql(-1);
                 deleteDirTemp(file);
             });
-            it('add a property that exist partially in the file tree levels', () => {
+            it('add properties that exist partially in the file tree levels', () => {
                 const file = copyYamlTemp('../test/templates/utils/application-dev.yml', 'application-dev.yml');
                 const yaml = { jhipster: { security: { authentication: { test: 'stream' } } } };
-                // BaseGenerator.log(file);
                 utils.updateYamlProperties(file, yaml, BaseGenerator);
                 const result = utils.getYamlProperty(file, 'jhipster.security.authentication.test', BaseGenerator);
                 expect(result).eql('stream');
@@ -500,7 +502,7 @@ describe('JHipster generator spring-cloud-stream', () => {
             });
             it('add properties that exist partially in the file x levels', () => {
                 const file = copyYamlTemp('../test/templates/utils/application-dev.yml', 'application-dev.yml');
-                const yamlAppDevProperties = {};
+                const yamlAppDevProperties = { };
                 utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.default.contentType', BaseGenerator, 'application/json');
                 utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.input.destination', BaseGenerator, 'topic-jhipster');
                 utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.output.destination', BaseGenerator, 'topic-jhipster');
@@ -508,6 +510,28 @@ describe('JHipster generator spring-cloud-stream', () => {
                 utils.updateYamlProperties(file, yamlAppDevProperties, BaseGenerator);
                 const result = utils.getYamlProperty(file, 'spring.cloud.stream.bindings.output.destination', BaseGenerator);
                 expect(result).eql('topic-jhipster');
+                deleteDirTemp(file);
+            });
+            it('add properties that exist, don\'t duplicate key update the file', () => {
+                const file = copyYamlTemp('../test/templates/utils/application-dev.yml', 'application-dev.yml');
+                const yamlAppDevProperties = { };
+                utils.updatePropertyInArray(yamlAppDevProperties, 'spring.jpa.database-platform', BaseGenerator, 'Test');
+                utils.updateYamlProperties(file, yamlAppDevProperties, BaseGenerator);
+                expect(() => utils.getYamlProperty(file, 'spring.jpa.database-platform', BaseGenerator)).not.to.throw(/no such file or directory/);
+                deleteDirTemp(file);
+            });
+            it('add properties before complex property that is on one line or more (ex hibernate.id.new_generator_mappings)', () => {
+                const file = copyYamlTemp('../test/templates/utils/application-dev.yml', 'application-dev.yml');
+                const yamlAppDevProperties = { };
+                utils.updatePropertyInArray(yamlAppDevProperties, 'spring.jpa.properties.hibernate.id.toto', BaseGenerator, 'stream');
+                utils.updateYamlProperties(file, yamlAppDevProperties, BaseGenerator);
+                const result = utils.getYamlProperty(file, 'spring.jpa.properties.hibernate.id.toto', BaseGenerator);
+                expect(result).eql('stream');
+                const lines = BaseGenerator.fs.readFileSync(`${file}`, 'utf8').split('\n');
+                expect(lines[44].indexOf('hibernate:')).eql(12);
+                expect(lines[45].indexOf('id:')).eql(16);
+                expect(lines[46].indexOf('toto:')).eql(20);
+                expect(lines[46].indexOf('stream')).not.eql(-1);
                 deleteDirTemp(file);
             });
         });
@@ -519,6 +543,52 @@ describe('JHipster generator spring-cloud-stream', () => {
         describe.skip('Delete YAML properties', () => {
             it('delete YAML properties ', () => {
 
+            });
+        });
+        describe('functions', () => {
+            it('getPathAndValueOfAllProperty ', () => {
+                const file = copyYamlTemp('../test/templates/utils/application-dev.yml', 'application-dev.yml');
+                const object = jsyaml.safeLoad(BaseGenerator.fs.readFileSync(`${file}`, 'utf8'));
+                const arrayRetur = [];
+                utils.getPathAndValueOfAllProperty(object, '', arrayRetur, BaseGenerator);
+                //  BaseGenerator.log(arrayRetur);
+                expect(arrayRetur.length).eql(54);
+                deleteDirTemp(file);
+            });
+            it('getLastPropertyCommonHierarchy ', () => {
+                const file = copyYamlTemp('../test/templates/utils/application-dev.yml', 'application-dev.yml');
+                const property = 'spring';
+                const propExist = utils.getLastPropertyCommonHierarchy(file, property, BaseGenerator);
+                expect(propExist).eql('spring');
+                deleteDirTemp(file);
+            });
+            it('getLastPropertyCommonHierarchy ', () => {
+                const file = copyYamlTemp('../test/templates/utils/application-dev.yml', 'application-dev.yml');
+                const property = 'spring.profiles';
+                const propExist = utils.getLastPropertyCommonHierarchy(file, property, BaseGenerator);
+                expect(propExist).eql('spring.profiles');
+                deleteDirTemp(file);
+            });
+            it('getLastPropertyCommonHierarchy ', () => {
+                const file = copyYamlTemp('../test/templates/utils/application-dev.yml', 'application-dev.yml');
+                const property = 'spring.profiles.test';
+                const propExist = utils.getLastPropertyCommonHierarchy(file, property, BaseGenerator);
+                expect(propExist).eql('spring.profiles');
+                deleteDirTemp(file);
+            });
+            it('getLastPropertyCommonHierarchy ', () => {
+                const file = copyYamlTemp('../test/templates/utils/application-dev.yml', 'application-dev.yml');
+                const property = 'spring.profiles.active';
+                const propExist = utils.getLastPropertyCommonHierarchy(file, property, BaseGenerator);
+                expect(propExist).eql('spring.profiles.active');
+                deleteDirTemp(file);
+            });
+            it('getLastPropertyCommonHierarchy ', () => {
+                const file = copyYamlTemp('../test/templates/utils/application-dev.yml', 'application-dev.yml');
+                const property = 'toto';
+                const propExist = utils.getLastPropertyCommonHierarchy(file, property, BaseGenerator);
+                expect(propExist).to.be.undefined();
+                deleteDirTemp(file);
             });
         });
     });
