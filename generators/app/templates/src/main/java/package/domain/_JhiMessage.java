@@ -1,12 +1,12 @@
 package <%= packageName %>.domain;
 
-public class JhiMessage {
+public class Jhi<%= rabbitMessageName %> {
 
     private String title;
 
     private String body;
 
-    public JhiMessage() {
+    public Jhi<%= rabbitMessageName %>() {
     }
 
     public String getTitle() {

@@ -61,30 +61,30 @@ module.exports = class extends BaseGenerator {
         const done = this.async();
 
         const prompts = [{
-                type: 'list',
-                name: 'messageBrokerType',
-                message: `Which ${chalk.yellow('*type*')} of message broker would you like to add?`,
-                choices: [
-                    {
-                        value: RABBITMQ,
-                        name: 'RabbitMQ message broker (recommended for simple projects)'
-                    },
-                    {
-                        value: KAFKA,
-                        name: 'Kafka message broker (recommended for advanced projects) not implemented yet'
-                    }
-                ],
-                store: true,
-                default: DEFAULT_BROKER_TYPE
-            },
-            {
-                when: response => response.messageBrokerType === RABBITMQ,
-                type: 'input',
-                name: 'rabbitMqNameOfMessage',
-                message: 'Please choose the name of the message class use by rabbit',
-                default: DEFAULT_RABBITMQ_MESSAGE_NAME,
-                store: true
-            },
+            type: 'list',
+            name: 'messageBrokerType',
+            message: `Which ${chalk.yellow('*type*')} of message broker would you like to add?`,
+            choices: [
+                {
+                    value: RABBITMQ,
+                    name: 'RabbitMQ message broker (recommended for simple projects)'
+                },
+                {
+                    value: KAFKA,
+                    name: 'Kafka message broker (recommended for advanced projects) not implemented yet'
+                }
+            ],
+            store: true,
+            default: DEFAULT_BROKER_TYPE
+        },
+        {
+            when: response => response.messageBrokerType === RABBITMQ,
+            type: 'input',
+            name: 'rabbitMqNameOfMessage',
+            message: 'Please choose the name of the message class use by rabbit',
+            default: DEFAULT_RABBITMQ_MESSAGE_NAME,
+            store: true
+        },
         ];
         if (this.defaultOptions) {
             this.messageBrokerType = DEFAULT_BROKER_TYPE;
@@ -110,19 +110,19 @@ module.exports = class extends BaseGenerator {
                 this.templatePath(source),
                 this.destinationPath(destination),
                 this
-                );
+            );
         };
 
 
         switch (this.messageBrokerType) {
-            case RABBITMQ:
-                this.installRabbitMq();
-                break;
-            case KAFKA:
-                this.installKafka();
-                break;
-            default:
-                break;
+        case RABBITMQ:
+            this.installRabbitMq();
+            break;
+        case KAFKA:
+            this.installKafka();
+            break;
+        default:
+            break;
         }
     }
 
@@ -161,6 +161,8 @@ module.exports = class extends BaseGenerator {
 
     installRabbitMq() {
         const STREAM_RABBIT_VERSION = '1.3.0.RELEASE';
+        const STREAM_CLOUD_DEPENDENCY_VERSION = 'Ditmars.RELEASE';
+        const STREAM_CLOUD_STREAM_VERSION = '1.3.0.RELEASE';
         // read config from .yo-rc.json
         this.baseName = this.jhipsterAppConfig.baseName;
         this.packageName = this.jhipsterAppConfig.packageName;
@@ -175,6 +177,7 @@ module.exports = class extends BaseGenerator {
 
         // const webappDir = jhipsterConstants.CLIENT_MAIN_SRC_DIR;
         this.log(`\nmessage broker type = ${this.messageBrokerType}`);
+        this.log(`\nmessage broker type = ${this.rabbitMqNameOfMessage}`);
         this.log('------\n');
 
         // use constants from generator-constants.js
@@ -182,18 +185,35 @@ module.exports = class extends BaseGenerator {
         const resourceDir = jhipsterConstants.SERVER_MAIN_RES_DIR;
         // add dependencies
         if (this.buildTool === 'maven') {
-            this.addMavenDependency('org.springframework.cloud', 'spring-cloud-starter-stream-rabbit', STREAM_RABBIT_VERSION);
+            if (typeof this.addMavenDependencyManagement === 'function') {
+                this.addMavenDependencyManagement('org.springframework.cloud', 'spring-cloud-stream-dependencies', STREAM_CLOUD_DEPENDENCY_VERSION, 'pom', 'import');
+                this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream');
+                this.addMavenDependency('org.springframework.cloud', 'spring-cloud-starter-stream-rabbit');
+            } else {
+                this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream', STREAM_CLOUD_STREAM_VERSION);
+                this.addMavenDependency('org.springframework.cloud', 'spring-cloud-starter-stream-rabbit', STREAM_RABBIT_VERSION);
+            }
         } else if (this.buildTool === 'gradle') {
-            this.addGradleDependency('compile', 'org.springframework.cloud', 'spring-cloud-starter-stream-rabbit', STREAM_RABBIT_VERSION);
+            if (typeof this.addGradleDependencyManagement === "function") {
+                this.addGradleDependencyManagement('mavenBOM', 'org.springframework.cloud', 'spring-cloud-stream-dependencies', STREAM_CLOUD_DEPENDENCY_VERSION);
+                this.addGradleDependency('compile', 'org.springframework.cloud', 'spring-cloud-stream');
+                this.addGradleDependency('compile', 'org.springframework.cloud', 'spring-cloud-starter-stream-rabbit');
+            } else {
+                this.addGradleDependency('compile', 'org.springframework.cloud', 'spring-cloud-stream', STREAM_CLOUD_STREAM_VERSION);
+                this.addGradleDependency('compile', 'org.springframework.cloud', 'spring-cloud-starter-stream-rabbit', STREAM_RABBIT_VERSION);
+            }
         }
 
         // add docker-compose file
         this.template('src/main/docker/_rabbitmq.yml', 'src/main/docker/rabbitmq.yml');
+        const messageName = this.rabbitMqNameOfMessage.charAt(0).toUpperCase() + this.rabbitMqNameOfMessage.slice(1);
+        this.rabbitMessageName = messageName;
+        this.rabbitMessageNameNonUcFirst = messageName.charAt(0).toLowerCase() + messageName.slice(1);
 
         // add Java classes
-        this.template('src/main/java/package/domain/_JhiMessage.java', `${javaDir}domain/JhiMessage.java`);
-        this.template('src/main/java/package/service/stream/_MessageSink.java', `${javaDir}service/stream/MessageSink.java`);
-        this.template('src/main/java/package/web/rest/_MessageResource.java', `${javaDir}web/rest/MessageResource.java`);
+        this.template('src/main/java/package/domain/_JhiMessage.java', `${javaDir}domain/Jhi${this.rabbitMessageName}.java`);
+        this.template('src/main/java/package/service/stream/_MessageSink.java', `${javaDir}service/stream/${this.rabbitMessageName}Sink.java`);
+        this.template('src/main/java/package/web/rest/_MessageResource.java', `${javaDir}web/rest/${this.rabbitMessageName}Resource.java`);
 
         // application-dev.yml
         const yamlAppDevProperties = { };
@@ -209,6 +229,6 @@ module.exports = class extends BaseGenerator {
         utils.updateYamlProperties(`${resourceDir}config/application-prod.yml`, yamlAppProdProperties, this);
     }
     installKafka() {
-        this.log(`Not implemented yet`);
+        this.log('Not implemented yet');
     }
 };

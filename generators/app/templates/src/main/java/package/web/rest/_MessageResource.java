@@ -1,8 +1,8 @@
 package <%= packageName %>.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import <%= packageName %>.domain.JhiMessage;
-import <%= packageName %>.service.stream.MessageSink;
+import <%= packageName %>.domain.Jhi<%= rabbitMessageName %>;
+import <%= packageName %>.service.stream.<%= rabbitMessageName %>Sink;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.messaging.Source;
@@ -16,26 +16,26 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @EnableBinding(Source.class)
-public class MessageResource {
+public class <%= rabbitMessageName %>Resource {
 
     private MessageChannel channel;
-    private MessageSink messageSink;
+    private <%= rabbitMessageName %>Sink <%= rabbitMessageNameNonUcFirst %>Sink;
 
-    public MessageResource(@Qualifier(Source.OUTPUT) MessageChannel channel, MessageSink messageSink) {
+    public <%= rabbitMessageName %>Resource(@Qualifier(Source.OUTPUT) MessageChannel channel, <%= rabbitMessageName %>Sink <%= rabbitMessageNameNonUcFirst %>Sink) {
         this.channel = channel;
-        this.messageSink = messageSink;
+        this.<%= rabbitMessageNameNonUcFirst %>Sink = <%= rabbitMessageNameNonUcFirst %>Sink;
     }
 
     @PostMapping("/messages")
     @Timed
     @ResponseStatus(HttpStatus.OK)
-    public void createMessage(JhiMessage jhiMessage) {
-        channel.send(MessageBuilder.withPayload(jhiMessage).setHeader("title", jhiMessage.getTitle()).build());
+    public void createMessage(Jhi<%= rabbitMessageName %> jhi<%= rabbitMessageName %>) {
+        channel.send(MessageBuilder.withPayload(jhi<%= rabbitMessageName %>).setHeader("title", jhi<%= rabbitMessageName %>.getTitle()).build());
     }
 
     @GetMapping("/messages")
     @Timed
-    public List<JhiMessage> getAllMessages() {
-        return messageSink.getMessages();
+    public List<Jhi<%= rabbitMessageName %>> getAllMessages() {
+        return <%= rabbitMessageNameNonUcFirst %>Sink.getMessages();
     }
 }
