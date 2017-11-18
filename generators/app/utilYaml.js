@@ -94,7 +94,7 @@ function deletePropertyInArray(array, name, generator) {
  * @return {string} the value of property or undefined
  */
 function getYamlProperty(file, name, generator) {
-    const treeData = jsyaml.safeLoad(generator.fs.readFileSync(`${file}`, 'utf8'));
+    const treeData = jsyaml.safeLoad(generator.fs.read(file));
     return getPropertyInArray(treeData, name.toString().split('.'), generator);
 }
 
@@ -106,10 +106,10 @@ function getYamlProperty(file, name, generator) {
  * @param {string} generator - The generator
  */
 function addYamlPropertiesAtBeginin(file, properties, generator) {
-    const bodyLines = generator.fs.readFileSync(`${file}`, 'utf8').split('\n');
+    const bodyLines = generator.fs.read(file).split('\n');
     const newLines = jsyaml.safeDump(properties, { indent: 4 }).split('\n');
     bodyLines.splice(bodyLines.count, 0, newLines.join('\n'));
-    generator.fs.writeFileSync(`${file}`, bodyLines.join('\n'), 'utf8');
+    generator.fs.write(file, bodyLines.join('\n'));
 }
 
 /**
@@ -120,9 +120,9 @@ function addYamlPropertiesAtBeginin(file, properties, generator) {
  * @param {string} generator - The generator
  */
 function addYamlPropertiesAtEnd(file, properties, generator) {
-    const bodyLines = generator.fs.readFileSync(`${file}`, 'utf8').split('\n');
+    const bodyLines = generator.fs.read(file).split('\n');
     const newLines = jsyaml.safeDump(properties, { indent: 4 }).split('\n');
-    generator.fs.writeFileSync(`${file}`, bodyLines.concat(newLines).join('\n'), 'utf8');
+    generator.fs.write(file, bodyLines.concat(newLines).join('\n'));
 }
 
 /**
@@ -135,7 +135,7 @@ function addYamlPropertiesAtEnd(file, properties, generator) {
  * @param {string} addBeforeComment - (Optional) if this variable is defined, means that we will return the index before the previuous comment of the property.
  */
 function addYamlPropertiesBeforeAnotherProperty(file, properties, generator, propertyBefore, addBeforeComment) {
-    const body = generator.fs.readFileSync(`${file}`, 'utf8');
+    const body = generator.fs.read(file);
     const newLines = jsyaml.safeDump(properties, { indent: 4 }).split('\n');
     const applicationPropertyIndex = getIndexBeforeLineOfProperty(body, propertyBefore, generator, addBeforeComment);
     if (applicationPropertyIndex === -1) {
@@ -143,7 +143,7 @@ function addYamlPropertiesBeforeAnotherProperty(file, properties, generator, pro
     }
     const bodyLines = body.split('\n');
     bodyLines.splice(applicationPropertyIndex, 0, newLines.join('\n'));
-    generator.fs.writeFileSync(`${file}`, bodyLines.join('\n'), 'utf8');
+    generator.fs.write(file, bodyLines.join('\n'));
 }
 
 /**
@@ -155,7 +155,7 @@ function addYamlPropertiesBeforeAnotherProperty(file, properties, generator, pro
  * @param {string} propertyAfter - The property after which we wish to insert new properties
  */
 function addYamlPropertiesAfterAnotherProperty(file, properties, generator, propertyAfter) {
-    const body = generator.fs.readFileSync(`${file}`, 'utf8');
+    const body = generator.fs.read(file);
     const newLines = jsyaml.safeDump(properties, { indent: 4 }).split('\n');
     const applicationPropertyIndex = getIndexAfterLineOfProperty(file, propertyAfter, generator);
     if (applicationPropertyIndex === -1) {
@@ -163,7 +163,7 @@ function addYamlPropertiesAfterAnotherProperty(file, properties, generator, prop
     }
     const bodyLines = body.split('\n');
     bodyLines.splice(applicationPropertyIndex, 0, newLines.join('\n'));
-    generator.fs.writeFileSync(`${file}`, bodyLines.join('\n'), 'utf8');
+    generator.fs.write(file, bodyLines.join('\n'));
 }
 
 /**
@@ -176,7 +176,7 @@ function addYamlPropertiesAfterAnotherProperty(file, properties, generator, prop
  * @param {string} numberSpace - number espace to start
  */
 function addYamlPropertiesAtLineIndex(file, properties, generator, indexLine, numberSpace) {
-    const body = generator.fs.readFileSync(`${file}`, 'utf8');
+    const body = generator.fs.read(file);
     const newLines = jsyaml.safeDump(properties, { indent: 4 }).split('\n');
     const bodyLines = body.split('\n');
     let spaceStr = '';
@@ -184,7 +184,7 @@ function addYamlPropertiesAtLineIndex(file, properties, generator, indexLine, nu
         spaceStr += ' ';
     }
     bodyLines.splice(indexLine, 0, newLines.map(line => spaceStr + line).join('\n'));
-    generator.fs.writeFileSync(`${file}`, bodyLines.join('\n'), 'utf8');
+    generator.fs.write(file, bodyLines.join('\n'));
 }
 
 /**
@@ -273,7 +273,7 @@ function addYamlPropertyAtLineIndex(file, property, value, generator, indexLine,
  * @return {string} String path property
  */
 function getLastPropertyCommonHierarchy(file, property, generator) {
-    const yamlData = jsyaml.safeLoad(generator.fs.readFileSync(`${file}`, 'utf8'));
+    const yamlData = jsyaml.safeLoad(generator.fs.read(file));
     const pathYaml = [];
     getPathAndValueOfAllProperty(yamlData, '', pathYaml, generator);
     let idxPropTmp = property.lastIndexOf('.');
@@ -366,7 +366,7 @@ function hasProperty(array, property, fromIdx, generator) {
  * If not define, return the index at the end all the properties of the parent property.
  */
 function getIndexAfterLineOfProperty(file, property, generator, ignorecur) {
-    const body = generator.fs.readFileSync(`${file}`, 'utf8');
+    const body = generator.fs.read(file);
     const lines = body.split('\n');
     let otherwiseLineIndex = -1;
     let curr;

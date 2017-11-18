@@ -3,8 +3,8 @@ const packagejs = require('../../package.json');
 const semver = require('semver');
 const BaseGenerator = require('generator-jhipster/generators/generator-base');
 const jhipsterConstants = require('generator-jhipster/generators/generator-constants');
-const utils = require('./utils');
-const fse = require('fs-extra');
+const utilYaml = require('./utilYaml.js');
+// const fse = require('fs-extra');
 
 const RABBITMQ = 'RabbitMQ';
 const KAFKA = 'Kafka';
@@ -16,8 +16,6 @@ module.exports = class extends BaseGenerator {
     get initializing() {
         return {
             init(args) {
-                this.fs.readFileSync = fse.readFileSync;
-                this.fs.writeFileSync = fse.writeFileSync;
                 if (args === 'default') {
                     this.defaultOptions = true;
                 }
@@ -194,7 +192,7 @@ module.exports = class extends BaseGenerator {
                 this.addMavenDependency('org.springframework.cloud', 'spring-cloud-starter-stream-rabbit', STREAM_RABBIT_VERSION);
             }
         } else if (this.buildTool === 'gradle') {
-            if (typeof this.addGradleDependencyManagement === "function") {
+            if (typeof this.addGradleDependencyManagement === 'function') {
                 this.addGradleDependencyManagement('mavenBOM', 'org.springframework.cloud', 'spring-cloud-stream-dependencies', STREAM_CLOUD_DEPENDENCY_VERSION);
                 this.addGradleDependency('compile', 'org.springframework.cloud', 'spring-cloud-stream');
                 this.addGradleDependency('compile', 'org.springframework.cloud', 'spring-cloud-starter-stream-rabbit');
@@ -217,16 +215,16 @@ module.exports = class extends BaseGenerator {
 
         // application-dev.yml
         const yamlAppDevProperties = { };
-        utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.default.contentType', this, 'application/json');
-        utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.input.destination', this, 'topic-jhipster');
-        utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.output.destination', this, 'topic-jhipster');
-        utils.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', this, 'headers.title');
-        utils.updateYamlProperties(`${resourceDir}config/application-dev.yml`, yamlAppDevProperties, this);
+        utilYaml.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.default.contentType', this, 'application/json');
+        utilYaml.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.input.destination', this, 'topic-jhipster');
+        utilYaml.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.output.destination', this, 'topic-jhipster');
+        utilYaml.updatePropertyInArray(yamlAppDevProperties, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', this, 'headers.title');
+        utilYaml.updateYamlProperties(`${resourceDir}config/application-dev.yml`, yamlAppDevProperties, this);
 
         // application-prod.yml
         const yamlAppProdProperties = yamlAppDevProperties;
-        utils.updatePropertyInArray(yamlAppProdProperties, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', this, 'payload.title');
-        utils.updateYamlProperties(`${resourceDir}config/application-prod.yml`, yamlAppProdProperties, this);
+        utilYaml.updatePropertyInArray(yamlAppProdProperties, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', this, 'payload.title');
+        utilYaml.updateYamlProperties(`${resourceDir}config/application-prod.yml`, yamlAppProdProperties, this);
     }
     installKafka() {
         this.log('Not implemented yet');
