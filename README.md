@@ -59,7 +59,6 @@ In your JHipster project, launch:
 yo jhipster-spring-cloud-stream
 ```
 
-
 # License
 
 Apache-2.0 © [Pascal Grimaud](https://twitter.com/pascalgrimaud) and the respective JHipster contributors
