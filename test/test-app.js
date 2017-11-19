@@ -17,7 +17,8 @@ describe('JHipster generator spring-cloud-stream', () => {
                     testmode: true
                 })
                 .withPrompts({
-                    message: 'simple message to say hello'
+                    messageBrokerType: 'RabbitMQ',
+                    rabbitMqNameOfMessage: 'rabbit',
                 })
                 .on('end', done);
         });
@@ -29,9 +30,9 @@ describe('JHipster generator spring-cloud-stream', () => {
         });
         it('generate Java classes', () => {
             assert.file([
-                'src/main/java/com/mycompany/myapp/domain/JhiMessage.java',
-                'src/main/java/com/mycompany/myapp/service/stream/MessageSink.java',
-                'src/main/java/com/mycompany/myapp/web/rest/MessageResource.java'
+                'src/main/java/com/mycompany/myapp/domain/JhiRabbit.java',
+                'src/main/java/com/mycompany/myapp/service/stream/RabbitSink.java',
+                'src/main/java/com/mycompany/myapp/web/rest/RabbitResource.java'
             ]);
         });
     });
@@ -47,7 +48,8 @@ describe('JHipster generator spring-cloud-stream', () => {
                     testmode: true
                 })
                 .withPrompts({
-                    message: 'simple message to say hello'
+                    messageBrokerType: 'RabbitMQ',
+                    rabbitMqNameOfMessage: 'rabbit',
                 })
                 .on('end', done);
         });
@@ -59,9 +61,9 @@ describe('JHipster generator spring-cloud-stream', () => {
         });
         it('generate Java classes', () => {
             assert.file([
-                'src/main/java/com/mycompany/myapp/domain/JhiMessage.java',
-                'src/main/java/com/mycompany/myapp/service/stream/MessageSink.java',
-                'src/main/java/com/mycompany/myapp/web/rest/MessageResource.java'
+                'src/main/java/com/mycompany/myapp/domain/JhiRabbit.java',
+                'src/main/java/com/mycompany/myapp/service/stream/RabbitSink.java',
+                'src/main/java/com/mycompany/myapp/web/rest/RabbitResource.java'
             ]);
         });
     });

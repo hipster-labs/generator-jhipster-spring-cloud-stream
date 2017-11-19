@@ -9,3 +9,5 @@ atlassian-ide-plugin.xml
 test/temp/
 *debug.log*
 .vscode
+yarn-error.log
+/nbproject/
