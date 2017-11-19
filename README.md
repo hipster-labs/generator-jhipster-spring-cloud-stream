@@ -1,6 +1,15 @@
 # generator-jhipster-spring-cloud-stream
 [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
-> JHipster module for microservice messaging with Spring Cloud Stream
+> JHipster module for message broker with Spring Cloud Stream
+
+<div align="center">
+  <a href="http://jhipster.github.io">
+    <img src="https://raw.githubusercontent.com/jhipster/jhipster.github.io/master/images/logo/logo-jhipster.png">
+  </a>
+  <a href="https://www.rabbitmq.com">
+    <img width=300px src="images/rabbitmq.png">
+  </a>
+</div>
 
 # Introduction
 
@@ -44,10 +53,16 @@ npm update -g generator-jhipster-spring-cloud-stream
 
 # Usage
 
+In your JHipster project, launch:
+
+```
+yo jhipster-spring-cloud-stream
+```
+
+
 # License
 
-Apache-2.0 © [Pascal Grimaud](https://twitter.com/pascalgrimaud)
-
+Apache-2.0 © [Pascal Grimaud](https://twitter.com/pascalgrimaud) and the respective JHipster contributors
 
 [npm-image]: https://img.shields.io/npm/v/generator-jhipster-spring-cloud-stream.svg
 [npm-url]: https://npmjs.org/package/generator-jhipster-spring-cloud-stream
