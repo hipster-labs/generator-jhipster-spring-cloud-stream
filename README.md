@@ -7,7 +7,7 @@
     <img src="https://raw.githubusercontent.com/jhipster/jhipster.github.io/master/images/logo/logo-jhipster.png">
   </a>
   <a href="https://www.rabbitmq.com">
-    <img width=300px src="images/rabbitmq.png">
+    <img width=300px src="https://raw.githubusercontent.com/hipster-labs/generator-jhipster-spring-cloud-stream/master/images/rabbitmq.png">
   </a>
 </div>
 
