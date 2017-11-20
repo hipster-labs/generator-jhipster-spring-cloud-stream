@@ -4,13 +4,11 @@ const semver = require('semver');
 const BaseGenerator = require('generator-jhipster/generators/generator-base');
 const jhipsterConstants = require('generator-jhipster/generators/generator-constants');
 const utilYaml = require('./utilYaml.js');
-// const fse = require('fs-extra');
 
 const RABBITMQ = 'RabbitMQ';
 const KAFKA = 'Kafka';
 const DEFAULT_BROKER_TYPE = RABBITMQ;
 const DEFAULT_RABBITMQ_MESSAGE_NAME = 'message';
-
 
 module.exports = class extends BaseGenerator {
     get initializing() {
@@ -67,10 +65,11 @@ module.exports = class extends BaseGenerator {
                     value: RABBITMQ,
                     name: 'RabbitMQ message broker (recommended for simple projects)'
                 },
-                {
-                    value: KAFKA,
-                    name: 'Kafka message broker (recommended for advanced projects) not implemented yet'
-                }
+                // keep commented as it's not implemented yet
+                // {
+                //     value: KAFKA,
+                //     name: 'Kafka message broker (recommended for advanced projects) not implemented yet'
+                // }
             ],
             store: true,
             default: DEFAULT_BROKER_TYPE
@@ -82,8 +81,7 @@ module.exports = class extends BaseGenerator {
             message: 'Please choose the name of the message class use by rabbit',
             default: DEFAULT_RABBITMQ_MESSAGE_NAME,
             store: true
-        },
-        ];
+        }];
         if (this.defaultOptions) {
             this.messageBrokerType = DEFAULT_BROKER_TYPE;
             this.rabbitMqNameOfMessage = DEFAULT_RABBITMQ_MESSAGE_NAME;
@@ -111,7 +109,6 @@ module.exports = class extends BaseGenerator {
             );
         };
 
-
         switch (this.messageBrokerType) {
         case RABBITMQ:
             this.installRabbitMq();
@@ -124,42 +121,13 @@ module.exports = class extends BaseGenerator {
         }
     }
 
-    install() {
-        let logMsg =
-            `To install your dependencies manually, run: ${chalk.yellow.bold(`${this.clientPackageManager} install`)}`;
-
-        if (this.clientFramework === 'angular1') {
-            logMsg =
-                `To install your dependencies manually, run: ${chalk.yellow.bold(`${this.clientPackageManager} install & bower install`)}`;
-        }
-        const injectDependenciesAndConstants = (err) => {
-            if (err) {
-                this.warning('Install of dependencies failed!');
-                this.log(logMsg);
-            } else if (this.clientFramework === 'angular1') {
-                this.spawnCommand('gulp', ['install']);
-            }
-        };
-        const installConfig = {
-            bower: this.clientFramework === 'angular1',
-            npm: this.clientPackageManager !== 'yarn',
-            yarn: this.clientPackageManager === 'yarn',
-            callback: injectDependenciesAndConstants
-        };
-        if (this.options['skip-install']) {
-            this.log(logMsg);
-        } else {
-            this.installDependencies(installConfig);
-        }
-    }
-
     end() {
         this.log('End of spring-cloud-stream generator');
     }
 
     installRabbitMq() {
         const STREAM_RABBIT_VERSION = '1.3.0.RELEASE';
-        const STREAM_CLOUD_DEPENDENCY_VERSION = 'Ditmars.RELEASE';
+        const STREAM_CLOUD_DEPENDENCY_VERSION = 'Chelsea.SR2';
         const STREAM_CLOUD_STREAM_VERSION = '1.3.0.RELEASE';
         // read config from .yo-rc.json
         this.baseName = this.jhipsterAppConfig.baseName;
@@ -171,7 +139,6 @@ module.exports = class extends BaseGenerator {
 
         // use function in generator-base.js from generator-jhipster
         this.angularAppName = this.getAngularAppName();
-
 
         // const webappDir = jhipsterConstants.CLIENT_MAIN_SRC_DIR;
         this.log(`\nmessage broker type = ${this.messageBrokerType}`);
@@ -226,6 +193,7 @@ module.exports = class extends BaseGenerator {
         utilYaml.updatePropertyInArray(yamlAppProdProperties, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', this, 'payload.title');
         utilYaml.updateYamlProperties(`${resourceDir}config/application-prod.yml`, yamlAppProdProperties, this);
     }
+
     installKafka() {
         this.log('Not implemented yet');
     }
