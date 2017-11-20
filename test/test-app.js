@@ -67,37 +67,4 @@ describe('JHipster generator spring-cloud-stream', () => {
             ]);
         });
     });
-
-    describe('Test with Kafka', () => {
-        beforeEach((done) => {
-            helpers
-                .run(path.join(__dirname, '../generators/app'))
-                .inTmpDir((dir) => {
-                    fse.copySync(path.join(__dirname, '../test/templates/kafka'), dir);
-                })
-                .withOptions({
-                    testmode: true
-                })
-                .withPrompts({
-                    messageBrokerType: 'RabbitMQ',
-                    rabbitMqNameOfMessage: 'rabbit',
-                })
-                .on('error', () => {
-                    done();
-                })
-                .on('end', done);
-        });
-        it('doesn\'t generate docker-compose file', () => {
-            assert.noFile([
-                'src/main/docker/rabbitmq.yml'
-            ]);
-        });
-        it('doesn\'t generate Java classes', () => {
-            assert.noFile([
-                'src/main/java/com/mycompany/myapp/domain/JhiRabbit.java',
-                'src/main/java/com/mycompany/myapp/service/stream/RabbitSink.java',
-                'src/main/java/com/mycompany/myapp/web/rest/RabbitResource.java'
-            ]);
-        });
-    });
 });
