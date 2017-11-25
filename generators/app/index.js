@@ -49,7 +49,12 @@ module.exports = class extends BaseGenerator {
                 if (!semver.satisfies(currentJhipsterVersion, minimumJhipsterVersion)) {
                     this.warning(`\nYour generated project used an old JHipster version (${currentJhipsterVersion})... you need at least (${minimumJhipsterVersion})\n`);
                 }
-            }
+            },
+            checkKafka() {
+                if (this.jhipsterAppConfig.messageBroker === 'kafka') {
+                    this.error('You already have Kafka in your project, no need to add RabbitMQ.');
+                }
+            },
         };
     }
 
