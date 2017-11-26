@@ -17,7 +17,7 @@ install:
     - yarn install
     - yarn link
 script:
-    - gulp test
+    - yarn test
     - cd $HOME
     - git clone https://github.com/jhipster/jhipster-sample-app-ng2
     - cd jhipster-sample-app-ng2
