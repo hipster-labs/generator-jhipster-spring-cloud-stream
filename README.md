@@ -62,8 +62,8 @@ yo jhipster-spring-cloud-stream
 This module will:
 - add new dependencies: `spring-cloud-stream-dependencies`
 - add configuration to your `application-dev.yml` and `application-prod.yml`
-- add a new endpoint, so you can test and send message
-- new docker-compose file: `rabbitmq.yml`
+- add a new endpoint, so you can get and send messages
+- a new docker-compose file: `rabbitmq.yml`
 
 Don't forget to start your RabbitMQ with:
 
