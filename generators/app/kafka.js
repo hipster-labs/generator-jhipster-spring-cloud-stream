@@ -89,7 +89,6 @@ module.exports = class extends BaseGenerator {
         if (this.defaultOptions) {
             this.messageBrokerType = DEFAULT_BROKER_TYPE;
             this.rabbitMqNameOfMessage = DEFAULT_RABBITMQ_MESSAGE_NAME;
-            this.writing();
             done();
         } else {
             this.prompt(prompts).then((props) => {
@@ -99,7 +98,6 @@ module.exports = class extends BaseGenerator {
                 if (this.props.messageBrokerType === RABBITMQ) {
                     this.rabbitMqNameOfMessage = this.props.rabbitMqNameOfMessage;
                 }
-                this.writing();
                 done();
             });
         }
@@ -117,10 +115,10 @@ module.exports = class extends BaseGenerator {
         this.log(this.messageBrokerType);
         switch (this.messageBrokerType) {
         case RABBITMQ:
-            this._installRabbitMq();
+            this.installRabbitMq();
             break;
         case KAFKA:
-            this._installKafka();
+            this.installKafka();
             break;
         default:
             break;
@@ -131,8 +129,8 @@ module.exports = class extends BaseGenerator {
         this.log('End of spring-cloud-stream generator');
     }
 
- _installRabbitMq() {
-
+    installRabbitMq() {
+        const done = this.async();
         const STREAM_RABBIT_VERSION = '1.3.0.RELEASE';
         const STREAM_CLOUD_DEPENDENCY_VERSION = 'Chelsea.SR2';
         const STREAM_CLOUD_STREAM_VERSION = '1.3.0.RELEASE';
@@ -200,11 +198,11 @@ module.exports = class extends BaseGenerator {
         const yamlAppProdProperties = yamlAppDevProperties;
         utilYaml.updatePropertyInArray(yamlAppProdProperties, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', this, 'payload.title');
         utilYaml.updateYamlProperties(`${resourceDir}config/application-prod.yml`, yamlAppProdProperties, this);
-      this.end();
+        done();
     }
 
-    _installKafka() {
-
+    installKafka() {
+        const done = this.async();
         const STREAM_KAFKA_VERSION = '1.2.1.RELEASE';
         const STREAM_CLOUD_DEPENDENCY_VERSION = 'Chelsea.SR2';
         const STREAM_CLOUD_STREAM_VERSION = '1.3.0.RELEASE';
@@ -233,11 +231,11 @@ module.exports = class extends BaseGenerator {
                 this.addMavenDependencyManagement('org.springframework.cloud', 'spring-cloud-stream-dependencies', STREAM_CLOUD_DEPENDENCY_VERSION, 'pom', 'import');
                 this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream');
                 this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream-binder-kafka');
-                this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream-test-support', null,'            <scope>test</scope>');
+                this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream-test-support', '<scope>test</scope>');
             } else {
                 this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream', STREAM_CLOUD_STREAM_VERSION);
                 this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream-binder-kafka', STREAM_KAFKA_VERSION);
-                this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream-test-support', STREAM_KAFKA_VERSION, '            <scope>test</scope>');
+                this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream-test-support', STREAM_KAFKA_VERSION, '<scope>test</scope>');
             }
         } else if (this.buildTool === 'gradle') {
             if (typeof this.addGradleDependencyManagement === 'function') {
@@ -296,7 +294,7 @@ module.exports = class extends BaseGenerator {
 
         // TODO add logback-spring.xml property
         // TODO add logback.xml property
-        this.end();
+      done();
     }
 
 };
