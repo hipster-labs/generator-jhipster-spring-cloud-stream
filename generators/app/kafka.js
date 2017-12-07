@@ -103,7 +103,7 @@ module.exports = class extends BaseGenerator {
         }
     }
 
-   writing() {
+    writing() {
         // function to use directly template
         this.template = function (source, destination) {
             this.fs.copyTpl(
@@ -125,7 +125,7 @@ module.exports = class extends BaseGenerator {
         }
     }
 
-   end() {
+    end() {
         this.log('End of spring-cloud-stream generator');
     }
 
@@ -262,7 +262,7 @@ module.exports = class extends BaseGenerator {
         this.template('src/main/docker/_kafka.yml', 'src/main/docker/kafka.yml');
 
         // config
-        this.template(`src/main/java/package/config/_MessagingConfiguration.java`, `${javaDir}config/MessagingConfiguration.java`);
+        this.template('src/main/java/package/config/_MessagingConfiguration.java', `${javaDir}config/MessagingConfiguration.java`);
 
 
         // application.yml
@@ -294,7 +294,6 @@ module.exports = class extends BaseGenerator {
 
         // TODO add logback-spring.xml property
         // TODO add logback.xml property
-      done();
+        done();
     }
-
 };

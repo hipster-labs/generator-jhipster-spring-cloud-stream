@@ -105,7 +105,7 @@ module.exports = class extends BaseGenerator {
         }
     }
 
-   writing() {
+    writing() {
         // function to use directly template
         this.template = function (source, destination) {
             this.fs.copyTpl(
@@ -127,12 +127,11 @@ module.exports = class extends BaseGenerator {
         }
     }
 
-   end() {
+    end() {
         this.log('End of spring-cloud-stream generator');
     }
 
- _installRabbitMq() {
-
+    _installRabbitMq() {
         const STREAM_RABBIT_VERSION = '1.3.0.RELEASE';
         const STREAM_CLOUD_DEPENDENCY_VERSION = 'Chelsea.SR2';
         const STREAM_CLOUD_STREAM_VERSION = '1.3.0.RELEASE';
@@ -200,11 +199,10 @@ module.exports = class extends BaseGenerator {
         const yamlAppProdProperties = yamlAppDevProperties;
         utilYaml.updatePropertyInArray(yamlAppProdProperties, 'spring.cloud.stream.bindings.rabbit.bindings.output.producer.routingKeyExpression', this, 'payload.title');
         utilYaml.updateYamlProperties(`${resourceDir}config/application-prod.yml`, yamlAppProdProperties, this);
-      this.end();
+        this.end();
     }
 
     _installKafka() {
-
         const STREAM_KAFKA_VERSION = '1.2.1.RELEASE';
         const STREAM_CLOUD_DEPENDENCY_VERSION = 'Chelsea.SR2';
         const STREAM_CLOUD_STREAM_VERSION = '1.3.0.RELEASE';
@@ -233,7 +231,7 @@ module.exports = class extends BaseGenerator {
                 this.addMavenDependencyManagement('org.springframework.cloud', 'spring-cloud-stream-dependencies', STREAM_CLOUD_DEPENDENCY_VERSION, 'pom', 'import');
                 this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream');
                 this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream-binder-kafka');
-                this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream-test-support', null,'            <scope>test</scope>');
+                this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream-test-support', null, '            <scope>test</scope>');
             } else {
                 this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream', STREAM_CLOUD_STREAM_VERSION);
                 this.addMavenDependency('org.springframework.cloud', 'spring-cloud-stream-binder-kafka', STREAM_KAFKA_VERSION);
@@ -264,7 +262,7 @@ module.exports = class extends BaseGenerator {
         this.template('src/main/docker/_kafka.yml', 'src/main/docker/kafka.yml');
 
         // config
-        this.template(`src/main/java/package/config/_MessagingConfiguration.java`, `${javaDir}config/MessagingConfiguration.java`);
+        this.template('src/main/java/package/config/_MessagingConfiguration.java', `${javaDir}config/MessagingConfiguration.java`);
 
 
         // application.yml
@@ -298,5 +296,4 @@ module.exports = class extends BaseGenerator {
         // TODO add logback.xml property
         this.end();
     }
-
 };
