@@ -165,7 +165,7 @@ module.exports = class extends BaseGenerator {
             }
         } else if (this.buildTool === 'gradle') {
             if (typeof this.addGradleDependencyManagement === 'function') {
-                this.addGradleDependencyManagement('mavenBOM', 'org.springframework.cloud', 'spring-cloud-stream-dependencies', STREAM_CLOUD_DEPENDENCY_VERSION);
+                this.addGradleDependencyManagement('mavenBom', 'org.springframework.cloud', 'spring-cloud-stream-dependencies', STREAM_CLOUD_DEPENDENCY_VERSION);
                 this.addGradleDependency('compile', 'org.springframework.cloud', 'spring-cloud-stream');
                 this.addGradleDependency('compile', 'org.springframework.cloud', 'spring-cloud-starter-stream-rabbit');
             } else {
