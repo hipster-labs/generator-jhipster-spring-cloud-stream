@@ -29,7 +29,7 @@ public class <%= rabbitMessageName %>Resource {
     @PostMapping("/messages")
     @Timed
     @ResponseStatus(HttpStatus.OK)
-    public void createMessage(Jhi<%= rabbitMessageName %> jhi<%= rabbitMessageName %>) {
+    public void createMessage(@RequestBody Jhi<%= rabbitMessageName %> jhi<%= rabbitMessageName %>) {
         channel.send(MessageBuilder.withPayload(jhi<%= rabbitMessageName %>).setHeader("title", jhi<%= rabbitMessageName %>.getTitle()).build());
     }
 
