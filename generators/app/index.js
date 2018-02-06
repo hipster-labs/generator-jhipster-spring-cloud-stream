@@ -184,6 +184,7 @@ module.exports = class extends BaseGenerator {
         this.template('src/main/java/package/domain/_JhiMessage.java', `${javaDir}domain/Jhi${this.rabbitMessageName}.java`);
         this.template('src/main/java/package/service/stream/_MessageSink.java', `${javaDir}service/stream/${this.rabbitMessageName}Sink.java`);
         this.template('src/main/java/package/web/rest/_MessageResource.java', `${javaDir}web/rest/${this.rabbitMessageName}Resource.java`);
+        this.template('src/main/java/package/config/_CloudMessagingConfiguration.java', `${javaDir}config/CloudMessagingConfiguration.java`);
 
         // application-dev.yml
         const yamlAppDevProperties = { };
