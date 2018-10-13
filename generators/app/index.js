@@ -1,8 +1,8 @@
 const chalk = require('chalk');
-const packagejs = require('../../package.json');
 const semver = require('semver');
 const BaseGenerator = require('generator-jhipster/generators/generator-base');
 const jhipsterConstants = require('generator-jhipster/generators/generator-constants');
+const packagejs = require('../../package.json');
 const utilYaml = require('./utilYaml.js');
 
 const RABBITMQ = 'RabbitMQ';
@@ -27,17 +27,17 @@ module.exports = class extends BaseGenerator {
             displayLogo() {
                 // it's here to show that you can use functions from generator-jhipster
                 // this function is in: generator-jhipster/generators/generator-base.js
-                const logo = '\n' +
-                    `${chalk.bold.yellow('               ████    ████        \n')}` +
-                    `${chalk.bold.yellow('               ████    ████        \n')}` +
-                    `${chalk.bold.yellow('               ████    ████        \n')}` +
-                    `${chalk.bold.yellow('               ████    ████        \n')}` +
-                    `${chalk.bold.yellow('               ████████████████████\n')}` +
-                    `${chalk.bold.yellow('               ████████████████████\n')}` +
-                    `${chalk.bold.yellow('               ████████████    ████\n')}` +
-                    `${chalk.bold.yellow('               ████████████    ████\n')}` +
-                    `${chalk.bold.yellow('               ████████████████████\n')}` +
-                    `${chalk.bold.yellow('               ████████████████████')}`;
+                const logo = '\n'
+                    + `${chalk.bold.yellow('               ████    ████        \n')}`
+                    + `${chalk.bold.yellow('               ████    ████        \n')}`
+                    + `${chalk.bold.yellow('               ████    ████        \n')}`
+                    + `${chalk.bold.yellow('               ████    ████        \n')}`
+                    + `${chalk.bold.yellow('               ████████████████████\n')}`
+                    + `${chalk.bold.yellow('               ████████████████████\n')}`
+                    + `${chalk.bold.yellow('               ████████████    ████\n')}`
+                    + `${chalk.bold.yellow('               ████████████    ████\n')}`
+                    + `${chalk.bold.yellow('               ████████████████████\n')}`
+                    + `${chalk.bold.yellow('               ████████████████████')}`;
                 this.log(logo);
 
                 // Have Yeoman greet the user.

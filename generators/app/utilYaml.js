@@ -347,8 +347,8 @@ function hasProperty(array, property, fromIdx, generator) {
     for (let i = fromIdx; i < array.length; i++) {
         const line = array[i];
 
-        if ((line.indexOf(`${property}:`) !== -1) &&
-            ((line.indexOf('#') === -1) || ((line.indexOf('#') !== -1) && (line.indexOf('#') > line.indexOf(`${property}:`))))) {
+        if ((line.indexOf(`${property}:`) !== -1)
+            && ((line.indexOf('#') === -1) || ((line.indexOf('#') !== -1) && (line.indexOf('#') > line.indexOf(`${property}:`))))) {
             returnIndex = i;
             break;
         }

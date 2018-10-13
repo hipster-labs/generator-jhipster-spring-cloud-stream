@@ -1,31 +1,26 @@
 /* global describe, beforeEach, it */
 
-// const utils = require('../generators/app/utilYaml');
 const fse = require('fs-extra');
-// const fs = require('fs');
 const chai = require('chai');
-// Load dirty chai first to hook plugin extensions
 const dirtyChai = require('dirty-chai');
 const path = require('path');
-// const crypto = require('crypto');
 const os = require('os');
 const jsyaml = require('js-yaml');
-
-chai.use(dirtyChai);
-const expect = chai.expect;
-// const BaseGenerator = require('generator-jhipster/generators/generator-base');
+const memFs = require('mem-fs');
+const editor = require('mem-fs-editor');
 const BaseGenerator = require('../generators/app/index').prototype;
 const utilYaml = require('../generators/app/utilYaml');
-// const BaseGenerator = this;
+
 BaseGenerator.log = (msg) => {
     console.log(msg);// eslint-disable-line no-console
 };
-const memFs = require('mem-fs');
-const editor = require('mem-fs-editor');
 
+chai.use(dirtyChai);
+const expect = chai.expect;
 const store = memFs.create();
 const fs = editor.create(store);
 BaseGenerator.fs = fs;
+
 process.on('unhandledRejection', (error) => {
     // Will print "unhandledRejection err is not defined"
     console.log('unhandledRejection', error.stack);// eslint-disable-line no-console
