@@ -4,7 +4,8 @@
   "description": "JHipster module for messaging microservices with Spring Cloud Stream",
   "keywords": [
     "yeoman-generator",
-    "jhipster-module"
+    "jhipster-module",
+    "jhipster-5"
   ],
   "homepage": "https://github.com/hipster-labs/generator-jhipster-spring-cloud-stream",
   "author": {
