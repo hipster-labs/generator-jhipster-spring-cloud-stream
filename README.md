@@ -23,20 +23,6 @@ As this is a [JHipster](http://jhipster.github.io/) module, we expect you have J
 
 # Installation
 
-## With Yarn
-
-To install this module:
-
-```bash
-yarn global add generator-jhipster-spring-cloud-stream
-```
-
-To update this module:
-
-```bash
-yarn global upgrade generator-jhipster-spring-cloud-stream
-```
-
 ## With NPM
 
 To install this module:
@@ -49,6 +35,20 @@ To update this module:
 
 ```bash
 npm update -g generator-jhipster-spring-cloud-stream
+```
+
+## With Yarn
+
+To install this module:
+
+```bash
+yarn global add generator-jhipster-spring-cloud-stream
+```
+
+To update this module:
+
+```bash
+yarn global upgrade generator-jhipster-spring-cloud-stream
 ```
 
 # Usage
@@ -71,6 +71,7 @@ Don't forget to start your RabbitMQ with:
 docker-compose -f src/main/docker/rabbitmq.yml up -d
 ```
 
+Then, start your project, go to Swagger UI and test the endpoint.
 
 # License
 
