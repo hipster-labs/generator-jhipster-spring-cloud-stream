@@ -10,6 +10,8 @@ cache:
 before_install:
     - npm install -g npm
     - npm install -g yo
+    - java -version
+    - date
 install:
     - npm install
     - npm link
