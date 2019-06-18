@@ -2,7 +2,7 @@ os:
     - linux
 language: node_js
 node_js:
-    - "8.12.0"
+    - '10.16.0'
 cache:
     directories:
         - $HOME/.m2
@@ -16,8 +16,8 @@ install:
 script:
     - npm test
     - cd $HOME
-    - git clone https://github.com/jhipster/jhipster-sample-app-ng2
-    - cd jhipster-sample-app-ng2
+    - git clone https://github.com/jhipster/jhipster-sample-app
+    - cd jhipster-sample-app
     - npm link generator-jhipster-spring-cloud-stream
     - yo jhipster-spring-cloud-stream default --force
-    - ./mvnw clean test
+    - ./mvnw -ntp clean test
