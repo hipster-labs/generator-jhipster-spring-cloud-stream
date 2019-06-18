@@ -1,6 +1,5 @@
 package <%= packageName %>.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import <%= packageName %>.domain.Jhi<%= rabbitMessageName %>;
 import <%= packageName %>.service.stream.<%= rabbitMessageName %>Sink;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,14 +26,12 @@ public class <%= rabbitMessageName %>Resource {
     }
 
     @PostMapping("/messages")
-    @Timed
     @ResponseStatus(HttpStatus.OK)
     public void createMessage(@RequestBody Jhi<%= rabbitMessageName %> jhi<%= rabbitMessageName %>) {
         channel.send(MessageBuilder.withPayload(jhi<%= rabbitMessageName %>).setHeader("title", jhi<%= rabbitMessageName %>.getTitle()).build());
     }
 
     @GetMapping("/messages")
-    @Timed
     public List<Jhi<%= rabbitMessageName %>> getAllMessages() {
         return <%= rabbitMessageNameNonUcFirst %>Sink.getMessages();
     }
